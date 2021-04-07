@@ -1,11 +1,5 @@
-# java-repository-template
+# orders-service
 
-### How to finish setting up java repository
+![CI/CD](https://github.com/ProgramowanieZespoloweIS2021/orders-service/actions/workflows/ci.yml/badge.svg)
 
-* Register repository to [codecov.io](https://app.codecov.io/). *Remember to add proper secret into your repository configuration*
-* Create badge for code coverage. Copy from:`https://app.codecov.io/gh/<user>/<repository>>/settings/badge`
-* Create badge for CI action 
-* Template is prepared for Maven based project. Add JaCoCo to your project to properly generate coverage report.
-```
-![CI/CD](https://github.com/<user>/<repository>/actions/workflows/ci.yml/badge.svg)
-```
+[![codecov](https://codecov.io/gh/ProgramowanieZespoloweIS2021/orders-service/branch/main/graph/badge.svg?token=O0MYevLF8p)](https://codecov.io/gh/ProgramowanieZespoloweIS2021/orders-service)
