@@ -4,8 +4,10 @@ import com.eszop.ordersservice.orders.dao.OrderDao;
 import com.eszop.ordersservice.orders.entity.Order;
 import com.eszop.ordersservice.orders.usecase.datagateways.GetOrderDataSourceGateway;
 import com.eszop.ordersservice.orders.usecase.inputboundaries.GetOrderInputBoundary;
+import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,11 @@ public class GetOrder implements GetOrderInputBoundary {
     @Override
     public Order byId(Long id) throws OrderNotFoundException {
         return getOrderDataSourceGateway.byId(id).orElseThrow(() -> new OrderNotFoundException(id)).asOrder();
+    }
+
+    @Override
+    public List<Order> byQueryCriteria(QueryCriteriaCollection queryCriteriaCollection) {
+        return getOrderDataSourceGateway.all(queryCriteriaCollection).stream().map(OrderDao::asOrder).collect(Collectors.toList());
     }
 
     @Override

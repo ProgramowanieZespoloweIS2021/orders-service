@@ -1,6 +1,6 @@
 package com.eszop.ordersservice.test.orders;
 
-import com.eszop.ordersservice.orders.adapter.OrderDtoAdapter;
+import com.eszop.ordersservice.orders.mapper.OrderDtoMapper;
 import com.eszop.ordersservice.orders.dto.request.PostOrderRequest;
 import com.eszop.ordersservice.orders.entity.Order;
 import com.eszop.ordersservice.orders.entity.OrderState;
@@ -23,7 +23,7 @@ public class OrderTest {
     })
     public void canCreateOrder(Long id, Long offerId, Long tierId, Long buyerId, String description, OrderState state){
 
-        var sut = OrderDtoAdapter.toOrder(new PostOrderRequest(id, buyerId, offerId, tierId, description, state, new Date()));
+        var sut = OrderDtoMapper.toOrder(new PostOrderRequest(id, buyerId, offerId, tierId, description, state, new Date()));
 
         assertThat(sut.getClass(), is(typeCompatibleWith(Order.class)));
         assertThat(sut.getOfferId(), is(equalTo(offerId)));

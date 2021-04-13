@@ -40,7 +40,7 @@ public class CreateOrderTest {
             "1, 2, 1, FINISHED"
     })
     public void Valid_order_is_created(Long id, Long offerId, Long selectedTierId, OrderState orderState) throws CreateOrderInputBoundary.SelectedOfferDoesNotExistException, CreateOrderInputBoundary.TierDoesNotExistForSelectedOfferException {
-        PostOrderRequest order = new OrderDtoBuilder().setId(id).setOfferId(offerId).setTierId(selectedTierId).setState(orderState).build();
+        PostOrderRequest order = new PostOrderRequestBuilder().setId(id).setOfferId(offerId).setTierId(selectedTierId).setState(orderState).build();
         OfferDto offer = new OfferDtoBuilder().setId(offerId).build();
 
         sut.create(order, offer);
@@ -50,7 +50,7 @@ public class CreateOrderTest {
 
     @Test
     public void Create_order_with_invalid_tierId_fails() {
-        PostOrderRequest order = new OrderDtoBuilder().setTierId(12L).build();
+        PostOrderRequest order = new PostOrderRequestBuilder().setTierId(12L).build();
         OfferDto offer = new OfferDtoBuilder().setTiers(Set.of(new TierDto(1L), new TierDto(2L))).build();
 
         assertThatThrownBy(() -> sut.create(order, offer))
@@ -59,7 +59,7 @@ public class CreateOrderTest {
 
     @Test
     public void Create_order_with_invalid_offerId_fails() {
-        PostOrderRequest order = new OrderDtoBuilder().setOfferId(2L).build();
+        PostOrderRequest order = new PostOrderRequestBuilder().setOfferId(2L).build();
         OfferDto offer = new OfferDtoBuilder().setId(null).build();
 
         assertThatThrownBy(() -> sut.create(order, offer))

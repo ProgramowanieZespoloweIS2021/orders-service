@@ -14,9 +14,6 @@ public class PostOrderRequest {
     public OrderState state;
     public Date creationDate;
 
-    public PostOrderRequest() {
-    }
-
     public PostOrderRequest(Long id, Long buyerId, Long offerId, Long tierId,
                             String description, OrderState state, Date creationDate) {
         this.id = id;

@@ -14,9 +14,6 @@ public class GetOrderResponse {
     public OrderState state;
     public Date creationDate;
 
-    public GetOrderResponse() {
-    }
-
     public GetOrderResponse(Object offer, Object buyer, Object selectedTier, Long id, String description, OrderState orderState, Date creationDate) {
         this.offer = offer;
         this.buyer = buyer;

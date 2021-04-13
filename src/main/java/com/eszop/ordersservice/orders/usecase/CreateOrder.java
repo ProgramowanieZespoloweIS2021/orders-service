@@ -1,7 +1,7 @@
 package com.eszop.ordersservice.orders.usecase;
 
-import com.eszop.ordersservice.orders.adapter.OfferDtoAdapter;
-import com.eszop.ordersservice.orders.adapter.OrderDtoAdapter;
+import com.eszop.ordersservice.orders.mapper.OfferDtoMapper;
+import com.eszop.ordersservice.orders.mapper.OrderDtoMapper;
 import com.eszop.ordersservice.orders.dto.request.OfferDto;
 import com.eszop.ordersservice.orders.dto.request.PostOrderRequest;
 import com.eszop.ordersservice.orders.entity.Offer;
@@ -28,10 +28,10 @@ public class CreateOrder implements CreateOrderInputBoundary {
             throw new SelectedOfferDoesNotExistException(postOrderRequest.offerId);
         }
 
-        Order order = OrderDtoAdapter.toOrder(postOrderRequest);
+        Order order = OrderDtoMapper.toOrder(postOrderRequest);
         order.setCreationDate(new Date());
 
-        Offer offer = OfferDtoAdapter.toOffer(offerDto);
+        Offer offer = OfferDtoMapper.toOffer(offerDto);
 
         if(!offer.isContainingTier(new Tier(order.getTierId()))){
             throw new TierDoesNotExistForSelectedOfferException(order.getOfferId(), order.getTierId());

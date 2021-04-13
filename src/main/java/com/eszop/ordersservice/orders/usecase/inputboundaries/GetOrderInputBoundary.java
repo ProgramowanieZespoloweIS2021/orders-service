@@ -1,7 +1,9 @@
 package com.eszop.ordersservice.orders.usecase.inputboundaries;
 
 import com.eszop.ordersservice.orders.entity.Order;
+import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
 
+import java.util.List;
 import java.util.Set;
 
 import static java.text.MessageFormat.format;
@@ -9,6 +11,7 @@ import static java.text.MessageFormat.format;
 public interface GetOrderInputBoundary {
 
     Order byId(Long id) throws OrderNotFoundException;
+    List<Order> byQueryCriteria(QueryCriteriaCollection queryCriteriaCollection);
     Set<Order> all();
 
     class OrderNotFoundException extends Exception{
