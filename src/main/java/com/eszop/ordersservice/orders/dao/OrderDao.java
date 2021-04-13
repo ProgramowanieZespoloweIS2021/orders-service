@@ -81,6 +81,7 @@ public class OrderDao {
     }
 
     @Column(name = "state")
+    @Enumerated(EnumType.STRING)
     public OrderState getState() {
         return state;
     }

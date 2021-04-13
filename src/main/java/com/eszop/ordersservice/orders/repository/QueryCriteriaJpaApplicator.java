@@ -1,5 +1,6 @@
 package com.eszop.ordersservice.orders.repository;
 
+import com.eszop.ordersservice.orders.usecase.ComparableAndQueryCriteriaCollection;
 import com.eszop.ordersservice.querycriteria.*;
 
 import javax.persistence.EntityManager;
@@ -17,7 +18,7 @@ public class QueryCriteriaJpaApplicator<T> {
     }
 
 
-    public Set<T> apply(QueryCriteriaCollection queryCriteriaCollection) {
+    public List<T> apply(ComparableAndQueryCriteriaCollection queryCriteriaCollection) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(typeArgument);
         Root<T> root = criteriaQuery.from(typeArgument);
@@ -29,6 +30,14 @@ public class QueryCriteriaJpaApplicator<T> {
         if (!filterQueryCriteriaCollection.isEmpty()) {
             for (var filterQueryCriteria : filterQueryCriteriaCollection) {
                 predicates.add(filterApplicator.applyFilterQueryCriteria(criteriaBuilder, root, filterQueryCriteria));
+            }
+        }
+
+        List<FilterQueryCriteria<? extends Comparable<?>>> comparableFilterQueryCriteriaCollection = queryCriteriaCollection.getFilterQueryCriteriaOfComparable();
+        ComparableFilterQueryCriteriaApplicator comparableFilterApplicator = new ComparableFilterQueryCriteriaApplicator();
+        if (!comparableFilterQueryCriteriaCollection.isEmpty()) {
+            for (var comparableFilterQueryCriteria : comparableFilterQueryCriteriaCollection) {
+                predicates.add(comparableFilterApplicator.applyFilterQueryCriteria(criteriaBuilder, root, comparableFilterQueryCriteria));
             }
         }
 
@@ -51,7 +60,7 @@ public class QueryCriteriaJpaApplicator<T> {
         typedQuery.setFirstResult(paginationQueryCriteria.getOffset());
         typedQuery.setMaxResults(paginationQueryCriteria.getLimit());
 
-        return new HashSet<>(typedQuery.getResultList());
+        return typedQuery.getResultList();
     }
 
 
@@ -62,6 +71,20 @@ public class QueryCriteriaJpaApplicator<T> {
         );
 
         Predicate applyFilterQueryCriteria(CriteriaBuilder criteriaBuilder, Root<?> root, FilterQueryCriteria<?> filterQueryCriteria) {
+            return mappingByFilterType.get(filterQueryCriteria.getFilterType()).apply(criteriaBuilder, root, filterQueryCriteria);
+        }
+    }
+
+    private class ComparableFilterQueryCriteriaApplicator {
+        Map<FilterType, TriFunction<CriteriaBuilder, Root<?>, FilterQueryCriteria<? extends Comparable>, Predicate>> mappingByFilterType = Map.of(
+                FilterType.EQUAL, (criteriaBuilder, root, filterQueryCriteria) -> criteriaBuilder.equal(root.get(filterQueryCriteria.getFieldName()), filterQueryCriteria.getValue()),
+                FilterType.LESS, (criteriaBuilder, root, filterQueryCriteria) -> criteriaBuilder.lessThan(root.get(filterQueryCriteria.getFieldName()), filterQueryCriteria.getValue()),
+                FilterType.LESS_EQUAL, (criteriaBuilder, root, filterQueryCriteria) -> criteriaBuilder.lessThanOrEqualTo(root.get(filterQueryCriteria.getFieldName()), filterQueryCriteria.getValue()),
+                FilterType.GREATER, (criteriaBuilder, root, filterQueryCriteria) -> criteriaBuilder.greaterThan(root.get(filterQueryCriteria.getFieldName()), filterQueryCriteria.getValue()),
+                FilterType.GREATER_EQUAL, (criteriaBuilder, root, filterQueryCriteria) -> criteriaBuilder.greaterThanOrEqualTo(root.get(filterQueryCriteria.getFieldName()), filterQueryCriteria.getValue())
+        );
+
+        Predicate applyFilterQueryCriteria(CriteriaBuilder criteriaBuilder, Root root, FilterQueryCriteria filterQueryCriteria) {
             return mappingByFilterType.get(filterQueryCriteria.getFilterType()).apply(criteriaBuilder, root, filterQueryCriteria);
         }
     }

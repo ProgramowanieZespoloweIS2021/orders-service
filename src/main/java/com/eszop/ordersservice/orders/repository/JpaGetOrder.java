@@ -1,11 +1,12 @@
 package com.eszop.ordersservice.orders.repository;
 
 import com.eszop.ordersservice.orders.dao.OrderDao;
+import com.eszop.ordersservice.orders.usecase.ComparableAndQueryCriteriaCollection;
 import com.eszop.ordersservice.orders.usecase.datagateways.GetOrderDataSourceGateway;
-import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,7 +27,7 @@ public class JpaGetOrder implements GetOrderDataSourceGateway {
     }
 
     @Override
-    public Set<OrderDao> all(QueryCriteriaCollection queryCriteriaCollection) {
+    public List<OrderDao> all(ComparableAndQueryCriteriaCollection queryCriteriaCollection) {
         return new QueryCriteriaJpaApplicator<>(entityManager, OrderDao.class).apply(queryCriteriaCollection);
     }
 

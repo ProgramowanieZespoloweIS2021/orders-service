@@ -13,9 +13,9 @@ public interface QueryCriteriaMapper {
 
     <T> FilterQueryCriteria<? extends Collection<?>> mapIdCollectionToFilterQueryCriteria(String fieldName, Collection<T> identifierCollection);
 
-    FilterQueryCriteria<? extends Collection<?>> mapFilterCriteriaDescriptionToFilterQueryCriteria(String fieldName, Collection<String> filterCriteriaDescription);
+    List<FilterQueryCriteria<? extends Comparable<?>>> mapFilterCriteriaDescriptionToFilterQueryCriteria(String fieldName, Collection<String> filterCriteriaDescriptions);
 
-    List<SortQueryCriteria> mapToSortQueryCriteria(Collection<String> sortCriteriaDescription);
+    List<SortQueryCriteria> mapToSortQueryCriteria(Collection<String> sortCriteriaDescriptions);
 
     PaginationQueryCriteria mapToPaginationQueryCriteria(int limit, int offset);
 

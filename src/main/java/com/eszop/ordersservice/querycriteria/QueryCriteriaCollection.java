@@ -1,18 +1,27 @@
 package com.eszop.ordersservice.querycriteria;
 
+import java.util.Collections;
 import java.util.List;
 
-public class QueryCriteriaCollection {
+public class QueryCriteriaCollection{
 
-    private final List<FilterQueryCriteria<?>> filterQueryCriteria;
-    private final List<SortQueryCriteria> sortQueryCriteria;
-    private final PaginationQueryCriteria paginationQueryCriteria;
+    private List<FilterQueryCriteria<?>> filterQueryCriteria = Collections.emptyList();
+    private List<SortQueryCriteria> sortQueryCriteria = Collections.emptyList();
+    private PaginationQueryCriteria paginationQueryCriteria;
 
-
-    public QueryCriteriaCollection(List<FilterQueryCriteria<?>> filterQueryCriteria, List<SortQueryCriteria> sortQueryCriteria, PaginationQueryCriteria paginationQueryCriteria) {
+    public QueryCriteriaCollection setFilterQueryCriteria(List<FilterQueryCriteria<?>> filterQueryCriteria) {
         this.filterQueryCriteria = filterQueryCriteria;
+        return this;
+    }
+
+    public QueryCriteriaCollection setSortQueryCriteria(List<SortQueryCriteria> sortQueryCriteria) {
         this.sortQueryCriteria = sortQueryCriteria;
+        return this;
+    }
+
+    public QueryCriteriaCollection setPaginationQueryCriteria(PaginationQueryCriteria paginationQueryCriteria) {
         this.paginationQueryCriteria = paginationQueryCriteria;
+        return this;
     }
 
     public List<FilterQueryCriteria<?>> getFilterQueryCriteria() {

@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -51,7 +52,7 @@ public class CreateOrderTest {
     @Test
     public void Create_order_with_invalid_tierId_fails() {
         PostOrderRequest order = new PostOrderRequestBuilder().setTierId(12L).build();
-        OfferDto offer = new OfferDtoBuilder().setTiers(Set.of(new TierDto(1L), new TierDto(2L))).build();
+        OfferDto offer = new OfferDtoBuilder().setTiers(List.of(new TierDto(1L), new TierDto(2L))).build();
 
         assertThatThrownBy(() -> sut.create(order, offer))
                 .isInstanceOf(CreateOrderInputBoundary.TierDoesNotExistForSelectedOfferException.class);

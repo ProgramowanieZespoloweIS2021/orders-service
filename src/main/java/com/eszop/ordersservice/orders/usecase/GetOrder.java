@@ -26,7 +26,7 @@ public class GetOrder implements GetOrderInputBoundary {
     }
 
     @Override
-    public List<Order> byQueryCriteria(QueryCriteriaCollection queryCriteriaCollection) {
+    public List<Order> byQueryCriteria(ComparableAndQueryCriteriaCollection queryCriteriaCollection) {
         return getOrderDataSourceGateway.all(queryCriteriaCollection).stream().map(OrderDao::asOrder).collect(Collectors.toList());
     }
 

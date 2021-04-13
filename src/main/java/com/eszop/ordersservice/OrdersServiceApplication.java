@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @SpringBootApplication
 public class OrdersServiceApplication {
 
@@ -23,6 +26,11 @@ public class OrdersServiceApplication {
     @Profile("dev")
     public WebClient devOffersWebClient() {
         return WebClient.builder().baseUrl("http://localhost:8081").build();
+    }
+
+    @PostConstruct
+    void started() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
     }
 
 }
