@@ -1,7 +1,7 @@
 package com.eszop.ordersservice.orders.usecase;
 
-import com.eszop.ordersservice.orders.dao.OrderDao;
 import com.eszop.ordersservice.orders.entity.Order;
+import com.eszop.ordersservice.orders.orm.OrderOrm;
 import com.eszop.ordersservice.orders.usecase.datagateways.GetOrderDataSourceGateway;
 import com.eszop.ordersservice.orders.usecase.inputboundaries.GetOrderInputBoundary;
 import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
@@ -21,18 +21,18 @@ public class GetOrder implements GetOrderInputBoundary {
     }
 
     @Override
-    public Order byId(Long id) throws OrderNotFoundException {
+    public Order byId(Long id) {
         return getOrderDataSourceGateway.byId(id).orElseThrow(() -> new OrderNotFoundException(id)).asOrder();
     }
 
     @Override
-    public List<Order> byQueryCriteria(ComparableAndQueryCriteriaCollection queryCriteriaCollection) {
-        return getOrderDataSourceGateway.all(queryCriteriaCollection).stream().map(OrderDao::asOrder).collect(Collectors.toList());
+    public List<Order> byQueryCriteria(QueryCriteriaCollection queryCriteriaCollection) {
+        return getOrderDataSourceGateway.all(queryCriteriaCollection).stream().map(OrderOrm::asOrder).collect(Collectors.toList());
     }
 
     @Override
     public Set<Order> all() {
-        return getOrderDataSourceGateway.all().stream().map(OrderDao::asOrder).collect(Collectors.toSet());
+        return getOrderDataSourceGateway.all().stream().map(OrderOrm::asOrder).collect(Collectors.toSet());
     }
 
 }

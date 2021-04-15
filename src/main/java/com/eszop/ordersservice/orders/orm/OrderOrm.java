@@ -1,9 +1,30 @@
-package com.eszop.ordersservice.orders.entity;
+package com.eszop.ordersservice.orders.orm;
 
+import com.eszop.ordersservice.orders.entity.Order;
+import com.eszop.ordersservice.orders.entity.OrderState;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
-public class Order {
+@Entity
+@Table(name = "orders")
+public class OrderOrm {
+
+    public static OrderOrm from(Order order) {
+        var toReturn = new OrderOrm();
+        toReturn.id = order.getId();
+        toReturn.buyerId = order.getBuyerId();
+        toReturn.offerId = order.getOfferId();
+        toReturn.description = order.getDescription();
+        toReturn.state = order.getState();
+        toReturn.creationDate = order.getCreationDate();
+        toReturn.tierId = order.getTierId();
+        return toReturn;
+    }
+
+    public Order asOrder() {
+        return new Order(id, buyerId, offerId, tierId, description, state, creationDate);
+    }
 
     private Long id;
     private Long buyerId;
@@ -13,19 +34,8 @@ public class Order {
     private OrderState state;
     private LocalDateTime creationDate;
 
-    public Order() {
-    }
-
-    public Order(Long id, Long buyerId, Long offerId, Long tierId, String description, OrderState state, LocalDateTime creationDate) {
-        this.id = id;
-        this.buyerId = buyerId;
-        this.offerId = offerId;
-        this.tierId = tierId;
-        this.description = description;
-        this.state = state;
-        this.creationDate = creationDate;
-    }
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -34,6 +44,7 @@ public class Order {
         this.id = id;
     }
 
+    @Column(name = "buyer_id")
     public Long getBuyerId() {
         return buyerId;
     }
@@ -42,6 +53,7 @@ public class Order {
         this.buyerId = buyerId;
     }
 
+    @Column(name = "offer_id")
     public Long getOfferId() {
         return offerId;
     }
@@ -50,6 +62,7 @@ public class Order {
         this.offerId = offerId;
     }
 
+    @Column(name = "tier_id")
     public Long getTierId() {
         return tierId;
     }
@@ -58,6 +71,7 @@ public class Order {
         this.tierId = tierId;
     }
 
+    @Column(name = "description")
     public String getDescription() {
         return description;
     }
@@ -66,32 +80,22 @@ public class Order {
         this.description = description;
     }
 
+    @Column(name = "state")
+    @Enumerated(EnumType.STRING)
     public OrderState getState() {
         return state;
     }
 
-    public void setState(OrderState state) {
-        this.state = state;
+    public void setState(OrderState orderState) {
+        this.state = orderState;
     }
 
+    @Column(name = "creation_date")
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return id.equals(order.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

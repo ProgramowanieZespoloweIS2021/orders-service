@@ -2,7 +2,7 @@ package com.eszop.ordersservice.orders.dto.response;
 
 import com.eszop.ordersservice.orders.entity.OrderState;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class GetOrderResponse {
 
@@ -12,9 +12,9 @@ public class GetOrderResponse {
     public Long id;
     public String description;
     public OrderState state;
-    public Date creationDate;
+    public LocalDateTime creationDate;
 
-    public GetOrderResponse(Object offer, Object buyer, Object selectedTier, Long id, String description, OrderState orderState, Date creationDate) {
+    public GetOrderResponse(Object offer, Object buyer, Object selectedTier, Long id, String description, OrderState orderState, LocalDateTime creationDate) {
         this.offer = offer;
         this.buyer = buyer;
         this.selectedTier = selectedTier;

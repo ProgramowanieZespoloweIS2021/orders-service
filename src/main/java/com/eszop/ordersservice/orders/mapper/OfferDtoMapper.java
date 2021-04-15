@@ -9,9 +9,9 @@ import java.util.Set;
 
 public class OfferDtoMapper {
 
-    public static Offer toOffer(OfferDto offerDto){
+    public static Offer toOffer(OfferDto offerDto) {
         Set<Tier> tiers = new HashSet<>();
-        for(var tierDto: offerDto.tiers){
+        for (var tierDto : offerDto.tiers) {
             tiers.add(new Tier(tierDto.id));
         }
         return new Offer(offerDto.id, offerDto.ownerId, tiers);

@@ -1,7 +1,7 @@
 package com.eszop.ordersservice.orders.repository;
 
-import com.eszop.ordersservice.orders.dao.OrderDao;
 import com.eszop.ordersservice.orders.entity.Order;
+import com.eszop.ordersservice.orders.orm.OrderOrm;
 import com.eszop.ordersservice.orders.usecase.datagateways.CreateOrderDataSourceGateway;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +16,6 @@ public class JpaCreateOrder implements CreateOrderDataSourceGateway {
 
     @Override
     public void create(Order order) {
-        jpaOrderRepository.save(OrderDao.from(order));
+        jpaOrderRepository.save(OrderOrm.from(order));
     }
 }

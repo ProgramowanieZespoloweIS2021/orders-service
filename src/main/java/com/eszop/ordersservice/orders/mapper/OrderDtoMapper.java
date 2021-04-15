@@ -5,16 +5,10 @@ import com.eszop.ordersservice.orders.entity.Order;
 
 public class OrderDtoMapper {
 
-    public static Order toOrder(PostOrderRequest postOrderRequest){
-        var toReturn = new Order();
-        toReturn.setId(postOrderRequest.id);
-        toReturn.setOfferId(postOrderRequest.offerId);
-        toReturn.setBuyerId(postOrderRequest.buyerId);
-        toReturn.setTierId(postOrderRequest.tierId);
-        toReturn.setDescription(postOrderRequest.description);
-        toReturn.setState(postOrderRequest.state);
-        toReturn.setCreationDate(postOrderRequest.creationDate);
-        return toReturn;
+    public static Order toOrder(PostOrderRequest postOrderRequest) {
+        return new Order(postOrderRequest.id, postOrderRequest.buyerId, postOrderRequest.offerId,
+                postOrderRequest.tierId, postOrderRequest.description, postOrderRequest.state,
+                postOrderRequest.creationDate);
     }
 
 }

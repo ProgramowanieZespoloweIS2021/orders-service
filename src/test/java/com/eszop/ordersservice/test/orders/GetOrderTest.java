@@ -1,18 +1,18 @@
 package com.eszop.ordersservice.test.orders;
 
-import com.eszop.ordersservice.orders.dao.OrderDao;
+import com.eszop.ordersservice.orders.orm.OrderOrm;
 import com.eszop.ordersservice.orders.entity.Order;
 import com.eszop.ordersservice.orders.usecase.GetOrder;
 import com.eszop.ordersservice.orders.usecase.datagateways.GetOrderDataSourceGateway;
 import com.eszop.ordersservice.orders.usecase.inputboundaries.GetOrderInputBoundary;
+import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,7 +42,7 @@ public class GetOrderTest {
 
     @Test
     public void Getting_existing_order_succeeds(){
-        when(getOrderDataSourceGateway.byId(1L)).thenReturn(Optional.of(OrderDao.from(new OrderBuilder().setId(1L).build())));
+        when(getOrderDataSourceGateway.byId(1L)).thenReturn(Optional.of(OrderOrm.from(new OrderBuilder().setId(1L).build())));
     }
 
     @Test
@@ -59,11 +59,32 @@ public class GetOrderTest {
         Order order1 = orderBuilder.setId(1L).build();
         Order order2 = orderBuilder.setId(2L).build();
         Order order3 = orderBuilder.setId(3L).build();
-        when(getOrderDataSourceGateway.all()).thenReturn(Set.of(OrderDao.from(order1), OrderDao.from(order2), OrderDao.from(order3)));
+        when(getOrderDataSourceGateway.all()).thenReturn(Set.of(OrderOrm.from(order1), OrderOrm.from(order2), OrderOrm.from(order3)));
 
         var result = sut.all();
 
         assertThat(result).containsExactlyInAnyOrder(order3, order2, order1);
+    }
+
+
+    class InMemoryGetOrderInputBoundary implements GetOrderInputBoundary{
+
+        List<Order> orders;
+
+        @Override
+        public Order byId(Long id) {
+            return orders.stream().filter(order -> order.getId().equals(id)).findFirst().orElseThrow(() -> new GetOrderInputBoundary.OrderNotFoundException(id));
+        }
+
+        @Override
+        public List<Order> byQueryCriteria(QueryCriteriaCollection queryCriteriaCollection) {
+            return null;
+        }
+
+        @Override
+        public Set<Order> all() {
+            return Set.copyOf(orders);
+        }
     }
 
 }

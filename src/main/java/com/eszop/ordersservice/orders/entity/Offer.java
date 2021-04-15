@@ -14,11 +14,11 @@ public class Offer {
         this.id = id;
     }
 
-    public Long getId(){
+    public Long getId() {
         return id;
     }
 
-    public boolean isContainingTier(Tier tier){
+    public boolean isContainingTier(Tier tier) {
         return tiers.stream().anyMatch(tier1 -> tier1.id.equals(tier.id));
     }
 

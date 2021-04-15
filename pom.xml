@@ -11,7 +11,7 @@
     <groupId>com.eszop</groupId>
     <artifactId>orders-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>orders-service</name>
     <description>Orders service</description>
     <properties>

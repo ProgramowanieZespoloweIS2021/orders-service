@@ -1,103 +1,173 @@
 package com.eszop.ordersservice.orders.mapper;
 
-import com.eszop.ordersservice.orders.entity.OrderState;
-import com.eszop.ordersservice.orders.usecase.ComparableAndQueryCriteriaCollection;
+import com.eszop.ordersservice.orders.exception.OrdersServiceException;
 import com.eszop.ordersservice.querycriteria.*;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.function.Supplier;
 
 @Component
-public class RestApiQueryCriteriaMapper implements QueryCriteriaMapper {
+public class RestApiQueryCriteriaMapper {
 
-    Map<String, FilterType> comparableFilterTypeByFilterDescription = Map.of(
-            "lt", FilterType.LESS,
-            "le", FilterType.LESS_EQUAL,
-            "gt", FilterType.GREATER,
-            "ge", FilterType.GREATER_EQUAL,
-            "eq", FilterType.EQUAL
+    private final SortCriteriaDescriptionMapper sortMapper = new SortCriteriaDescriptionMapper(":");
+    private final FilterCriteriaDescriptionMapper filterMapper = new FilterCriteriaDescriptionMapper(":");
+    private final StringConverter converter;
+
+
+    private final Map<String, Class<?>> classByFilteringDescriptionSupportedFields = Map.of(
+            "creationDate", LocalDateTime.class
     );
 
-    public ComparableAndQueryCriteriaCollection of(Long buyerId, Long offerId, Long tierId, List<String> creationDateFilterCriteria, OrderState state, List<String> orderingCriteria, Integer pageLimit, Integer pageOffset){
-        var toReturn = new ComparableAndQueryCriteriaCollection();
+    public RestApiQueryCriteriaMapper(String dateTimeFormat, String dateFormat) {
+        this.converter = new StringConverter(dateTimeFormat, dateFormat);
+    }
 
-        List<FilterQueryCriteria<?>> filterCriteria = new ArrayList<>();
-        filterCriteria.add(mapIdToFilterQueryCriteria("buyerId", buyerId));
-        filterCriteria.add(mapIdToFilterQueryCriteria("offerId", offerId));
-        filterCriteria.add(mapIdToFilterQueryCriteria("tierId", tierId));
-        filterCriteria.add(mapIdToFilterQueryCriteria("state", state));
+    private <K, T, E extends OrdersServiceException> T getOrElseThrow(Map<K, T> getFrom, K key, Supplier<E> supplier) {
+        if (!getFrom.containsKey(key)) throw supplier.get();
+        return getFrom.get(key);
+    }
+
+    public QueryCriteriaCollection queryCriteriaCollectionOf(Map<String, ?> idToBeFilteredByFieldNames, Map<String, List<String>> filterCriteriaByFieldNames, List<String> orderingCriteria, Integer pageLimit, Integer pageOffset) {
+        List<FilterCriteria<?>> filterCriteria = new ArrayList<>();
+        for (var entry : idToBeFilteredByFieldNames.entrySet()) {
+            filterCriteria.add(filterMapper.mapIdValue(entry.getKey(), entry.getValue()));
+        }
+        for (var entry : filterCriteriaByFieldNames.entrySet()) {
+            if (classByFilteringDescriptionSupportedFields.containsKey(entry.getKey())) {
+                filterCriteria.addAll(filterMapper.mapFilterCriteriaDescription(entry.getKey(), entry.getValue(), classByFilteringDescriptionSupportedFields.get(entry.getKey())));
+            }else{
+                throw new DescriptionBasedFilteringNotSupportedException(entry.getKey());
+            }
+        }
         filterCriteria = filterCriteria.stream().filter(Objects::nonNull).toList();
 
-        List<FilterQueryCriteria<? extends Comparable<?>>> comparableFilterCriteria = new ArrayList<>();
-        comparableFilterCriteria.addAll(mapFilterCriteriaDescriptionToFilterQueryCriteria("creationDate", creationDateFilterCriteria));
+        List<OrderCriteria> orderCriteria = sortMapper.mapSortCriteriaDescription(orderingCriteria);
 
-        List<SortQueryCriteria> sortQueryCriteria = mapToSortQueryCriteria(orderingCriteria);
+        PaginationCriteria paginationCriteria = new PaginationCriteria(pageLimit, pageOffset);
 
-        PaginationQueryCriteria paginationQueryCriteria = mapToPaginationQueryCriteria(pageLimit, pageOffset);
-
-        toReturn.setFilterQueryCriteria(filterCriteria);
-        toReturn.setFilterQueryCriteriaOfComparable(comparableFilterCriteria);
-        toReturn.setSortQueryCriteria(sortQueryCriteria);
-        toReturn.setPaginationQueryCriteria(paginationQueryCriteria);
-        return toReturn;
+        return new QueryCriteriaCollection(filterCriteria, orderCriteria, paginationCriteria);
     }
 
 
-    @Override
-    public <T> FilterQueryCriteria<?> mapIdToFilterQueryCriteria(String fieldName, T id) {
-        if (id == null) return null;
-        return new FilterQueryCriteria<>(id, FilterType.EQUAL, fieldName);
-    }
+    @FunctionalInterface
+    interface Converter<T, R> {
+        R convert(T value);
 
-    @Override
-    public <T> FilterQueryCriteria<? extends Collection<?>> mapIdCollectionToFilterQueryCriteria(String fieldName, Collection<T> identifierCollection) {
-        if (identifierCollection.isEmpty()) return null;
-        return new FilterQueryCriteria<>(identifierCollection, FilterType.CONTAINS_ALL, fieldName);
-    }
-
-    @Override
-    public List<FilterQueryCriteria<? extends Comparable<?>>> mapFilterCriteriaDescriptionToFilterQueryCriteria(String fieldName, Collection<String> filterCriteriaDescriptions) {
-        if (filterCriteriaDescriptions.isEmpty()) return Collections.emptyList();
-        List<FilterQueryCriteria<? extends Comparable<?>>> filterQueryCriteria = new ArrayList<>();
-        for (String filterCriteriaDescription : filterCriteriaDescriptions) {
-            filterQueryCriteria.add(parseFilterQueryCriteria(fieldName, filterCriteriaDescription));
+        class FormatNotSupportedException extends OrdersServiceException {
+            public FormatNotSupportedException(String value) {
+                super("Cannot find applicable converter for: " + value);
+            }
         }
-        return filterQueryCriteria;
     }
 
-    private FilterQueryCriteria<? extends Comparable<?>> parseFilterQueryCriteria(String fieldName,String filterCriteriaDescription){
-        String valueString = filterCriteriaDescription.substring(filterCriteriaDescription.indexOf(":")+1);
-        String filterDescriptionString = filterCriteriaDescription.substring(0, filterCriteriaDescription.lastIndexOf(":"));
-        try{
-            return new FilterQueryCriteria<>(new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").parse(valueString), comparableFilterTypeByFilterDescription.get(filterDescriptionString), fieldName);
-        } catch (ParseException e) { }
-        try{
-            return new FilterQueryCriteria<>(new SimpleDateFormat("yyyy-MM-dd").parse(valueString), comparableFilterTypeByFilterDescription.get(filterDescriptionString), fieldName);
-        } catch (ParseException e) { }
-        try{
-            return new FilterQueryCriteria<>(Long.valueOf(valueString), comparableFilterTypeByFilterDescription.get(filterDescriptionString), fieldName);
-        } catch (NumberFormatException e){ }
-        throw new RuntimeException("Filter value format nor supported!");
-    }
-
-    @Override
-    public List<SortQueryCriteria> mapToSortQueryCriteria(Collection<String> sortCriteriaDescriptions) {
-        if (sortCriteriaDescriptions.isEmpty()) return Collections.emptyList();
-        List<SortQueryCriteria> sortQueryCriteria = new ArrayList<>();
-        for (String sortCriteriaDescription : sortCriteriaDescriptions) {
-            SortType sortType;
-            if (sortCriteriaDescription.startsWith("desc")) sortType = SortType.DESCENDING;
-            else if (sortCriteriaDescription.startsWith("asc")) sortType = SortType.ASCENDING;
-            else throw new RuntimeException("Sort type unknown");
-            sortQueryCriteria.add(new SortQueryCriteria(sortType, sortCriteriaDescription.substring(sortCriteriaDescription.indexOf("(") + 1, sortCriteriaDescription.lastIndexOf(")"))));
+    public static class FilterMappingNotFoundException extends OrdersServiceException {
+        public FilterMappingNotFoundException(String filteringCriteriaDescription) {
+            super(MessageFormat.format("Filter mapping not found for description: {0}", filteringCriteriaDescription));
         }
-        return sortQueryCriteria;
     }
 
-    @Override
-    public PaginationQueryCriteria mapToPaginationQueryCriteria(int limit, int offset) {
-        return new PaginationQueryCriteria(limit, offset);
+    public static class OrderingMappingNotFoundException extends OrdersServiceException {
+        public OrderingMappingNotFoundException(String filteringCriteriaDescription) {
+            super(MessageFormat.format("Ordering mapping not found for description: {0}", filteringCriteriaDescription));
+        }
     }
+    public static class DescriptionBasedFilteringNotSupportedException extends OrdersServiceException{
+        public DescriptionBasedFilteringNotSupportedException(String fieldName) {
+            super(MessageFormat.format("Description based filtering not supported for field: {1}", fieldName));
+        }
+    }
+
+    private static class StringConverter {
+
+        private final Map<Class<?>, Converter<String, ?>> converterByClassType = new HashMap<>();
+
+        public StringConverter(String dateTimeFormat, String dateFormat) {
+            converterByClassType.put(Long.class, (longString) -> {
+                try {
+                    return Long.valueOf(longString);
+                } catch (Exception e) {
+                    throw new Converter.FormatNotSupportedException(longString);
+                }
+            });
+            converterByClassType.put(LocalDateTime.class, (dateString) -> {
+                try{
+                    var formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+                    return LocalDateTime.parse(dateString, formatter);
+                } catch (DateTimeParseException e){}
+                try {
+                    var formatter = DateTimeFormatter.ofPattern(dateFormat);
+                    return LocalDateTime.of(LocalDate.parse(dateString, formatter), LocalTime.of(0,0,0));
+                } catch (DateTimeParseException e){}
+                throw new Converter.FormatNotSupportedException(dateString);
+            });
+        }
+
+        public <T> T convert(String valueString, Class<T> aClass) {
+            return (T) converterByClassType.get(aClass).convert(valueString);
+        }
+
+    }
+
+    private class FilterCriteriaDescriptionMapper {
+
+        private final Map<String, FilterType> filterTypeByDescription = Map.of(
+                "lt", FilterType.LESS,
+                "le", FilterType.LESS_EQUAL,
+                "gt", FilterType.GREATER,
+                "ge", FilterType.GREATER_EQUAL,
+                "eq", FilterType.EQUAL
+        );
+        private final String separator;
+
+        private FilterCriteriaDescriptionMapper(String separator) {
+            this.separator = separator;
+        }
+
+        public <T> FilterCriteria<?> mapIdValue(String fieldName, T idValue) {
+            if (idValue == null) return null;
+            return new FilterCriteria<>(idValue, FilterType.EQUAL, fieldName);
+        }
+
+        public <T> List<FilterCriteria<?>> mapFilterCriteriaDescription(String fieldName, Collection<String> filterCriteriaDescriptions, Class<T> aClass) {
+            List<FilterCriteria<?>> filterCriteria = new ArrayList<>();
+            for (String filterCriteriaDescription : filterCriteriaDescriptions) {
+                String filterTypeDescription = filterCriteriaDescription.split(separator)[0];
+                String fieldValueString = filterCriteriaDescription.split(separator)[1];
+                filterCriteria.add(new FilterCriteria<>(converter.convert(fieldValueString, aClass),
+                        getOrElseThrow(filterTypeByDescription, filterTypeDescription, () -> new FilterMappingNotFoundException(filterTypeDescription)), fieldName));
+            }
+            return filterCriteria;
+        }
+    }
+
+    private class SortCriteriaDescriptionMapper {
+
+        private final Map<String, OrderType> orderTypeByDescription = Map.of(
+                "desc", OrderType.DESCENDING,
+                "asc", OrderType.ASCENDING
+        );
+        private final String separator;
+
+        private SortCriteriaDescriptionMapper(String separator) {
+            this.separator = separator;
+        }
+
+        public List<OrderCriteria> mapSortCriteriaDescription(Collection<String> sortCriteriaDescriptions) {
+            List<OrderCriteria> orderCriteria = new ArrayList<>();
+            for (String sortCriteriaDescription : sortCriteriaDescriptions) {
+                String orderTypeDescription = sortCriteriaDescription.split(separator)[0];
+                String fieldName = sortCriteriaDescription.split(separator)[1];
+                orderCriteria.add(new OrderCriteria(getOrElseThrow(orderTypeByDescription, orderTypeDescription, () -> new OrderingMappingNotFoundException(orderTypeDescription)), fieldName));
+            }
+            return orderCriteria;
+        }
+    }
+
 }

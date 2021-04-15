@@ -3,7 +3,7 @@ package com.eszop.ordersservice.test.orders;
 import com.eszop.ordersservice.orders.dto.request.PostOrderRequest;
 import com.eszop.ordersservice.orders.entity.OrderState;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class PostOrderRequestBuilder {
 
@@ -13,7 +13,7 @@ public class PostOrderRequestBuilder {
     private Long tierId = 1L;
     private String description = "description";
     private OrderState state = OrderState.ORDERED;
-    private Date creationDate = new Date();
+    private LocalDateTime creationDate = LocalDateTime.now();
 
     public PostOrderRequestBuilder setId(Long id) {
         this.id = id;
@@ -45,7 +45,7 @@ public class PostOrderRequestBuilder {
         return this;
     }
 
-    public PostOrderRequestBuilder setCreationDate(Date creationDate) {
+    public PostOrderRequestBuilder setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
         return this;
     }

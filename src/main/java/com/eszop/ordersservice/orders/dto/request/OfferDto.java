@@ -8,11 +8,11 @@ public class OfferDto {
     public Long ownerId;
     public List<TierDto> tiers;
 
-    public OfferDto(){
+    public OfferDto() {
 
     }
 
-    public OfferDto(Long id, Long ownerId, List<TierDto> tiers){
+    public OfferDto(Long id, Long ownerId, List<TierDto> tiers) {
         this.id = id;
         this.ownerId = ownerId;
         this.tiers = tiers;

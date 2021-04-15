@@ -7,7 +7,7 @@ import com.eszop.ordersservice.orders.entity.OrderState;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -23,7 +23,7 @@ public class OrderTest {
     })
     public void canCreateOrder(Long id, Long offerId, Long tierId, Long buyerId, String description, OrderState state){
 
-        var sut = OrderDtoMapper.toOrder(new PostOrderRequest(id, buyerId, offerId, tierId, description, state, new Date()));
+        var sut = OrderDtoMapper.toOrder(new PostOrderRequest(id, buyerId, offerId, tierId, description, state, LocalDateTime.now()));
 
         assertThat(sut.getClass(), is(typeCompatibleWith(Order.class)));
         assertThat(sut.getOfferId(), is(equalTo(offerId)));

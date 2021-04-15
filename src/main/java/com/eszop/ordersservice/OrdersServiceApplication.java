@@ -1,12 +1,17 @@
 package com.eszop.ordersservice;
 
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.PostConstruct;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
 @SpringBootApplication
@@ -16,16 +21,35 @@ public class OrdersServiceApplication {
         SpringApplication.run(OrdersServiceApplication.class, args);
     }
 
-    @Bean
+    @Bean(name = "offersUrl")
+    @Profile("dev")
+    public URL devOffersUrl() throws MalformedURLException {
+        return new URL("http://localhost:8081/offers");
+    }
+
+    @Bean(name = "offersUrl")
     @Profile("prod")
-    public WebClient offersWebClient() {
-        return WebClient.builder().baseUrl("http://offers:8080").build();
+    public URL prodOffersApiClient() throws MalformedURLException {
+        return new URL("http://offers:8080/offers");
     }
 
     @Bean
-    @Profile("dev")
-    public WebClient devOffersWebClient() {
-        return WebClient.builder().baseUrl("http://localhost:8081").build();
+    public String dateFormat() {
+        return "yyyy-MM-dd";
+    }
+
+    @Bean
+    public String dateTimeFormat() {
+        return "yyyy-MM-dd-HH-mm-ss";
+    }
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+        return builder -> {
+            builder.simpleDateFormat(dateTimeFormat());
+            builder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat())));
+            builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat())));
+        };
     }
 
     @PostConstruct

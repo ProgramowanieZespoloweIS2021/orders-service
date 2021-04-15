@@ -3,7 +3,7 @@ package com.eszop.ordersservice.test.orders;
 import com.eszop.ordersservice.orders.entity.Order;
 import com.eszop.ordersservice.orders.entity.OrderState;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class OrderBuilder {
 
@@ -52,7 +52,7 @@ public class OrderBuilder {
         built.setTierId(tierId);
         built.setDescription(description);
         built.setState(state);
-        built.setCreationDate(new Date());
+        built.setCreationDate(LocalDateTime.now());
         return built;
     }
 
