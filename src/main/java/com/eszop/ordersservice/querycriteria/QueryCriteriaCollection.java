@@ -6,15 +6,15 @@ import java.util.List;
 public class QueryCriteriaCollection {
 
     private List<FilterCriteria<?>> filterCriteria = Collections.emptyList();
-    private List<OrderCriteria> orderCriteria = Collections.emptyList();
+    private List<OrderCriteria> orderingCriteria = Collections.emptyList();
     private PaginationCriteria paginationCriteria;
 
     public QueryCriteriaCollection() {
     }
 
-    public QueryCriteriaCollection(List<FilterCriteria<?>> filterCriteria, List<OrderCriteria> orderCriteria, PaginationCriteria paginationCriteria) {
+    public QueryCriteriaCollection(List<FilterCriteria<?>> filterCriteria, List<OrderCriteria> orderingCriteria, PaginationCriteria paginationCriteria) {
         this.filterCriteria = filterCriteria;
-        this.orderCriteria = orderCriteria;
+        this.orderingCriteria = orderingCriteria;
         this.paginationCriteria = paginationCriteria;
     }
 
@@ -23,8 +23,8 @@ public class QueryCriteriaCollection {
         return this;
     }
 
-    public QueryCriteriaCollection setSortQueryCriteria(List<OrderCriteria> orderCriteria) {
-        this.orderCriteria = orderCriteria;
+    public QueryCriteriaCollection setOrderingQueryCriteria(List<OrderCriteria> orderCriteria) {
+        this.orderingCriteria = orderCriteria;
         return this;
     }
 
@@ -41,7 +41,7 @@ public class QueryCriteriaCollection {
         return paginationCriteria;
     }
 
-    public List<OrderCriteria> getSortQueryCriteria() {
-        return orderCriteria;
+    public List<OrderCriteria> getOrderingQueryCriteria() {
+        return orderingCriteria;
     }
 }

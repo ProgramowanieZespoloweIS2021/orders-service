@@ -1,10 +1,9 @@
 package com.eszop.ordersservice.test.orders;
 
-import com.eszop.ordersservice.orders.dto.request.OfferDto;
-import com.eszop.ordersservice.orders.dto.request.TierDto;
+import com.eszop.ordersservice.orders.domain.usecase.dto.OfferDto;
+import com.eszop.ordersservice.orders.domain.usecase.dto.TierDto;
 
 import java.util.List;
-import java.util.Set;
 
 public class OfferDtoBuilder {
 

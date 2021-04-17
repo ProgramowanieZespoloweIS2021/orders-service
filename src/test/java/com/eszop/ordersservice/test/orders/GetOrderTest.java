@@ -1,10 +1,10 @@
 package com.eszop.ordersservice.test.orders;
 
-import com.eszop.ordersservice.orders.orm.OrderOrm;
-import com.eszop.ordersservice.orders.entity.Order;
-import com.eszop.ordersservice.orders.usecase.GetOrder;
-import com.eszop.ordersservice.orders.usecase.datagateways.GetOrderDataSourceGateway;
-import com.eszop.ordersservice.orders.usecase.inputboundaries.GetOrderInputBoundary;
+import com.eszop.ordersservice.orders.data.orm.OrderOrm;
+import com.eszop.ordersservice.orders.domain.entity.Order;
+import com.eszop.ordersservice.orders.domain.usecase.GetOrder;
+import com.eszop.ordersservice.orders.domain.usecase.datagateways.GetOrderDataSourceGateway;
+import com.eszop.ordersservice.orders.domain.usecase.inputboundaries.GetOrderInputBoundary;
 import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -64,27 +63,6 @@ public class GetOrderTest {
         var result = sut.all();
 
         assertThat(result).containsExactlyInAnyOrder(order3, order2, order1);
-    }
-
-
-    class InMemoryGetOrderInputBoundary implements GetOrderInputBoundary{
-
-        List<Order> orders;
-
-        @Override
-        public Order byId(Long id) {
-            return orders.stream().filter(order -> order.getId().equals(id)).findFirst().orElseThrow(() -> new GetOrderInputBoundary.OrderNotFoundException(id));
-        }
-
-        @Override
-        public List<Order> byQueryCriteria(QueryCriteriaCollection queryCriteriaCollection) {
-            return null;
-        }
-
-        @Override
-        public Set<Order> all() {
-            return Set.copyOf(orders);
-        }
     }
 
 }

@@ -1,7 +1,7 @@
 package com.eszop.ordersservice.test.orders;
 
-import com.eszop.ordersservice.orders.entity.Order;
-import com.eszop.ordersservice.orders.entity.OrderState;
+import com.eszop.ordersservice.orders.domain.entity.Order;
+import com.eszop.ordersservice.orders.domain.entity.OrderState;
 
 import java.time.LocalDateTime;
 

@@ -1,9 +1,9 @@
 package com.eszop.ordersservice.test.orders;
 
-import com.eszop.ordersservice.orders.mapper.OrderDtoMapper;
-import com.eszop.ordersservice.orders.dto.request.PostOrderRequest;
-import com.eszop.ordersservice.orders.entity.Order;
-import com.eszop.ordersservice.orders.entity.OrderState;
+import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
+import com.eszop.ordersservice.orders.domain.usecase.dto.mapper.OrderMapper;
+import com.eszop.ordersservice.orders.domain.entity.Order;
+import com.eszop.ordersservice.orders.domain.entity.OrderState;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -23,7 +23,7 @@ public class OrderTest {
     })
     public void canCreateOrder(Long id, Long offerId, Long tierId, Long buyerId, String description, OrderState state){
 
-        var sut = OrderDtoMapper.toOrder(new PostOrderRequest(id, buyerId, offerId, tierId, description, state, LocalDateTime.now()));
+        var sut = OrderMapper.toOrder(new OrderDto(id, buyerId, offerId, tierId, description, state, LocalDateTime.now()));
 
         assertThat(sut.getClass(), is(typeCompatibleWith(Order.class)));
         assertThat(sut.getOfferId(), is(equalTo(offerId)));
