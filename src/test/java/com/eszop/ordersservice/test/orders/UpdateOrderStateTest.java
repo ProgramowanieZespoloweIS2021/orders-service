@@ -27,10 +27,10 @@ public class UpdateOrderStateTest {
     }
 
     @Test
-    public void Can_update_order_state_for_existing_order(){
+    public void Can_update_order_state_for_existing_order() {
         doReturn(true).when(dataSourceGateway).existsById(any(Long.class));
         doNothing().when(dataSourceGateway).update(any(Long.class), any(OrderState.class));
-        OrderStateDto orderStateDto = new OrderStateDto(){{
+        OrderStateDto orderStateDto = new OrderStateDto() {{
             value = OrderState.FINISHED;
         }};
 
@@ -40,9 +40,9 @@ public class UpdateOrderStateTest {
     }
 
     @Test
-    public void Throws_exception_on_non_existing_order(){
+    public void Throws_exception_on_non_existing_order() {
         doReturn(false).when(dataSourceGateway).existsById(any(Long.class));
-        OrderStateDto orderStateDto = new OrderStateDto(){{
+        OrderStateDto orderStateDto = new OrderStateDto() {{
             value = OrderState.FINISHED;
         }};
 

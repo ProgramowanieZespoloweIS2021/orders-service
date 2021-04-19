@@ -1,12 +1,12 @@
 package com.eszop.ordersservice.test.orders;
 
-import com.eszop.ordersservice.orders.domain.usecase.dto.OfferDto;
-import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
-import com.eszop.ordersservice.orders.domain.usecase.dto.TierDto;
 import com.eszop.ordersservice.orders.domain.entity.Order;
 import com.eszop.ordersservice.orders.domain.entity.OrderState;
 import com.eszop.ordersservice.orders.domain.usecase.CreateOrder;
 import com.eszop.ordersservice.orders.domain.usecase.datagateways.CreateOrderDataSourceGateway;
+import com.eszop.ordersservice.orders.domain.usecase.dto.OfferDto;
+import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
+import com.eszop.ordersservice.orders.domain.usecase.dto.TierDto;
 import com.eszop.ordersservice.orders.domain.usecase.inputboundaries.CreateOrderInputBoundary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

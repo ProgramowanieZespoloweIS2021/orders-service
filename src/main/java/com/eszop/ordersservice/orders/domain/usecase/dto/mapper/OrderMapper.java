@@ -1,7 +1,7 @@
 package com.eszop.ordersservice.orders.domain.usecase.dto.mapper;
 
-import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
 import com.eszop.ordersservice.orders.domain.entity.Order;
+import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
 
 public class OrderMapper {
 
@@ -11,7 +11,7 @@ public class OrderMapper {
                 orderDto.creationDate);
     }
 
-    public static OrderDto toOrderDto(Order order){
+    public static OrderDto toOrderDto(Order order) {
         return new OrderDto(order.getId(), order.getBuyerId(), order.getOfferId(), order.getTierId(), order.getDescription(), order.getState(), order.getCreationDate());
     }
 

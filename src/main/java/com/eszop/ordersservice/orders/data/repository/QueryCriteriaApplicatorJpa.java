@@ -78,9 +78,9 @@ public class QueryCriteriaApplicatorJpa<T> {
             return mappingByFilterType.get(orderCriteria.getSortType()).apply(criteriaBuilder, root, orderCriteria);
         }
 
-        private String snakeCaseToCamelCase(String snakeCase){
+        private String snakeCaseToCamelCase(String snakeCase) {
             String[] words = snakeCase.split("_");
-            return words[0] + Stream.of(words).skip(1).map(item -> Character.toUpperCase(item.charAt(0))+item.substring(1)).collect(Collectors.joining());
+            return words[0] + Stream.of(words).skip(1).map(item -> Character.toUpperCase(item.charAt(0)) + item.substring(1)).collect(Collectors.joining());
         }
     }
 

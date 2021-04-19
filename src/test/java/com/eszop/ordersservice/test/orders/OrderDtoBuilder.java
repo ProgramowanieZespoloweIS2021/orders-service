@@ -1,7 +1,7 @@
 package com.eszop.ordersservice.test.orders;
 
-import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
 import com.eszop.ordersservice.orders.domain.entity.OrderState;
+import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
 
 import java.time.LocalDateTime;
 
@@ -50,7 +50,7 @@ public class OrderDtoBuilder {
         return this;
     }
 
-    public OrderDto build(){
+    public OrderDto build() {
         return new OrderDto(id, buyerId, offerId, tierId, description, state, creationDate);
     }
 

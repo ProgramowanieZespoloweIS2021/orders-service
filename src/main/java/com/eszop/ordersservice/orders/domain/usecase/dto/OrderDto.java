@@ -2,7 +2,6 @@ package com.eszop.ordersservice.orders.domain.usecase.dto;
 
 import com.eszop.ordersservice.orders.domain.entity.OrderState;
 
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;

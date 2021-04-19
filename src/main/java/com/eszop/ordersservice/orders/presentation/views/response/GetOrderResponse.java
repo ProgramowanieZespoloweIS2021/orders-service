@@ -1,7 +1,7 @@
 package com.eszop.ordersservice.orders.presentation.views.response;
 
-import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
 import com.eszop.ordersservice.orders.domain.entity.OrderState;
+import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
 
 import java.time.LocalDateTime;
 

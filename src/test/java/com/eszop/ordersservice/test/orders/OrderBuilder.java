@@ -44,7 +44,7 @@ public class OrderBuilder {
         return this;
     }
 
-    public Order build(){
+    public Order build() {
         var built = new Order();
         built.setId(id);
         built.setBuyerId(buyerId);
