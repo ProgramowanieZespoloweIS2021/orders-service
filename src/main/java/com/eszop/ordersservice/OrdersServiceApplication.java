@@ -2,11 +2,12 @@ package com.eszop.ordersservice;
 
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 
 import javax.annotation.PostConstruct;
 import java.net.MalformedURLException;
@@ -19,18 +20,6 @@ public class OrdersServiceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(OrdersServiceApplication.class, args);
-    }
-
-    @Bean(name = "offersUrl")
-    @Profile("dev")
-    public URL devOffersUrl() throws MalformedURLException {
-        return new URL("http://localhost:8081/offers");
-    }
-
-    @Bean(name = "offersUrl")
-    @Profile("prod")
-    public URL prodOffersApiClient() throws MalformedURLException {
-        return new URL("http://offers:8080/offers");
     }
 
     @Bean
@@ -50,6 +39,11 @@ public class OrdersServiceApplication {
             builder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat())));
             builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat())));
         };
+    }
+
+    @Bean
+    public URL offersUrl(@Value("${offers.url}") String offersUrl) throws MalformedURLException {
+        return new URL(offersUrl);
     }
 
     @PostConstruct

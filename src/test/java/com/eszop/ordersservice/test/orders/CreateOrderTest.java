@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class CreateOrderTest {
     @BeforeEach
     public void setUp() {
         createOrderDataSourceGateway = mock(CreateOrderDataSourceGateway.class);
-        doNothing().when(createOrderDataSourceGateway).create(Mockito.any(Order.class));
+        doNothing().when(createOrderDataSourceGateway).create(any(Order.class));
         sut = new CreateOrder(createOrderDataSourceGateway);
     }
 
@@ -45,7 +44,7 @@ public class CreateOrderTest {
 
         sut.create(order, offer);
 
-        verify(createOrderDataSourceGateway, times(1)).create(Mockito.any(Order.class));
+        verify(createOrderDataSourceGateway, times(1)).create(any(Order.class));
     }
 
     @Test

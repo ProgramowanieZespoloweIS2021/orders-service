@@ -18,7 +18,6 @@ public class OrderDto {
     public Long tierId;
     @NotEmpty
     public String description;
-    @NotNull
     public OrderState state;
     public LocalDateTime creationDate;
 

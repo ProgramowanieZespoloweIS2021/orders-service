@@ -3,6 +3,7 @@ package com.eszop.ordersservice.orders.presentation.controller;
 import com.eszop.ordersservice.orders.data.externalapi.OffersApiClient;
 import com.eszop.ordersservice.orders.domain.usecase.dto.*;
 import com.eszop.ordersservice.orders.domain.usecase.dto.mapper.OrderMapper;
+import com.eszop.ordersservice.orders.domain.usecase.inputboundaries.UpdateOrderStateInputBoundary;
 import com.eszop.ordersservice.orders.presentation.dto.DescriptionFilterCriteriaDto;
 import com.eszop.ordersservice.orders.presentation.dto.IdFilterCriteriaDto;
 import com.eszop.ordersservice.orders.presentation.dto.OrderingCriteriaDto;
@@ -13,9 +14,9 @@ import com.eszop.ordersservice.orders.domain.entity.OrderState;
 import com.eszop.ordersservice.orders.presentation.dto.mapper.OrderRestApiQueryCriteriaMapper;
 import com.eszop.ordersservice.orders.domain.usecase.inputboundaries.CreateOrderInputBoundary;
 import com.eszop.ordersservice.orders.domain.usecase.inputboundaries.GetOrderInputBoundary;
+import com.eszop.ordersservice.orders.presentation.views.response.UpdateOrderStateResponse;
 import com.eszop.ordersservice.querycriteria.PaginationCriteria;
 import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -27,33 +28,47 @@ public class OrderController {
 
     private final CreateOrderInputBoundary createOrder;
     private final GetOrderInputBoundary getOrder;
+    private final UpdateOrderStateInputBoundary updateOrderState;
     private final OffersApiClient offersApiClient;
     //private final UsersApiClient usersApiClient;
     private final OrderRestApiQueryCriteriaMapper queryCriteriaMapper;
 
-    public OrderController(CreateOrderInputBoundary createOrder, GetOrderInputBoundary getOrder, OffersApiClient offersApiClient, OrderRestApiQueryCriteriaMapper queryCriteriaMapper) {
+    public OrderController(CreateOrderInputBoundary createOrder, GetOrderInputBoundary getOrder, UpdateOrderStateInputBoundary updateOrderState, OffersApiClient offersApiClient, OrderRestApiQueryCriteriaMapper queryCriteriaMapper) {
         this.createOrder = createOrder;
         this.getOrder = getOrder;
+        this.updateOrderState = updateOrderState;
         this.offersApiClient = offersApiClient;
         this.queryCriteriaMapper = queryCriteriaMapper;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getOffer(@PathVariable("id") Long orderId) {
-        Order order = getOrder.byId(orderId);
-        Mono<?> offerMono = offersApiClient.getOffer(order.getOfferId(), Object.class).onErrorReturn(new OfferDto(null, null, Collections.emptyList()));
-        return ResponseEntity.ok(new GetOrderResponse(offerMono.block(), order.getBuyerId(), order.getTierId(), OrderMapper.toOrderDto(order)));
+    @PostMapping("/{id}/state")
+    public UpdateOrderStateResponse updateOrderState(@PathVariable("id")Long orderId, @RequestBody OrderStateDto orderStateDto){
+        updateOrderState.updateState(orderStateDto, orderId);
+        return new UpdateOrderStateResponse();
     }
 
+    @GetMapping("/{id}")
+    public GetOrderResponse getOrder(@PathVariable("id") Long orderId) {
+        Order order = getOrder.byId(orderId);
+        Mono<?> offerMono = offersApiClient.getOffer(order.getOfferId(), Object.class).onErrorReturn(new OfferDto(null, null, Collections.emptyList()));
+        return new GetOrderResponse(offerMono.block(), order.getBuyerId(), order.getTierId(), OrderMapper.toOrderDto(order));
+    }
+
+//    @PostMapping
+//    public CreateOrderResponse postOrder(@RequestBody OrderDto orderDto) {
+//        OfferDto offerDto = offersApiClient.getOffer(orderDto.offerId, OfferDto.class).block();
+//        createOrder.create(orderDto, offerDto);
+//        return new CreateOrderResponse();
+//    }
+
     @PostMapping
-    public ResponseEntity<?> postOrder(@RequestBody OrderDto orderDto) {
-        OfferDto offerDto = offersApiClient.getOffer(orderDto.offerId, OfferDto.class).block();
-        createOrder.create(orderDto, offerDto);
-        return ResponseEntity.ok(new CreateOrderResponse());
+    public CreateOrderResponse postOrder(@RequestBody List<OrderDto> orderDtos){
+        createOrder.create(offersApiClient.getOfferByOrder(orderDtos));
+        return new CreateOrderResponse();
     }
 
     @GetMapping
-    public ResponseEntity<?> getOrders(@RequestParam Optional<Long> offerId,
+    public List<Order> getOrders(@RequestParam Optional<Long> offerId,
                                        @RequestParam Optional<Long> buyerId,
                                        @RequestParam Optional<Long> tierId,
                                        @RequestParam Optional<OrderState> state,
@@ -74,8 +89,7 @@ public class OrderController {
                 paginationCriteria
         );
 
-        List<Order> orders = getOrder.byQueryCriteria(collection);
-        return ResponseEntity.ok(orders);
+        return getOrder.byQueryCriteria(collection);
     }
 
 }
