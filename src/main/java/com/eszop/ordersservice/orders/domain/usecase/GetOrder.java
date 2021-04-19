@@ -1,7 +1,7 @@
 package com.eszop.ordersservice.orders.domain.usecase;
 
-import com.eszop.ordersservice.orders.domain.entity.Order;
 import com.eszop.ordersservice.orders.data.orm.OrderOrm;
+import com.eszop.ordersservice.orders.domain.entity.Order;
 import com.eszop.ordersservice.orders.domain.usecase.datagateways.GetOrderDataSourceGateway;
 import com.eszop.ordersservice.orders.domain.usecase.inputboundaries.GetOrderInputBoundary;
 import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;

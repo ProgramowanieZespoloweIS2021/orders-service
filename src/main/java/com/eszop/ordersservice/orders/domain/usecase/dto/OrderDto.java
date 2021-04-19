@@ -2,7 +2,6 @@ package com.eszop.ordersservice.orders.domain.usecase.dto;
 
 import com.eszop.ordersservice.orders.domain.entity.OrderState;
 
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -18,7 +17,6 @@ public class OrderDto {
     public Long tierId;
     @NotEmpty
     public String description;
-    @NotNull
     public OrderState state;
     public LocalDateTime creationDate;
 

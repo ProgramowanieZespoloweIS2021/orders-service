@@ -5,13 +5,14 @@ import com.eszop.ordersservice.orders.domain.entity.Order;
 import com.eszop.ordersservice.orders.domain.usecase.GetOrder;
 import com.eszop.ordersservice.orders.domain.usecase.datagateways.GetOrderDataSourceGateway;
 import com.eszop.ordersservice.orders.domain.usecase.inputboundaries.GetOrderInputBoundary;
-import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -27,25 +28,25 @@ public class GetOrderTest {
     private GetOrderDataSourceGateway getOrderDataSourceGateway;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         getOrderDataSourceGateway = mock(GetOrderDataSourceGateway.class);
         this.sut = new GetOrder(getOrderDataSourceGateway);
     }
 
     @Test
-    public void Getting_non_existing_order_fails(){
+    public void Getting_non_existing_order_fails() {
         when(getOrderDataSourceGateway.byId(Mockito.anyLong())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> sut.byId(1L)).isInstanceOf(GetOrderInputBoundary.OrderNotFoundException.class);
     }
 
     @Test
-    public void Getting_existing_order_succeeds(){
+    public void Getting_existing_order_succeeds() {
         when(getOrderDataSourceGateway.byId(1L)).thenReturn(Optional.of(OrderOrm.from(new OrderBuilder().setId(1L).build())));
     }
 
     @Test
-    public void Getting_all_orders_when_no_orders_registered_returns_empty_collection(){
+    public void Getting_all_orders_when_no_orders_registered_returns_empty_collection() {
         when(getOrderDataSourceGateway.all()).thenReturn(Collections.emptySet());
 
         var result = sut.all();
@@ -53,7 +54,7 @@ public class GetOrderTest {
     }
 
     @Test
-    public void Getting_all_orders_content_matches_actual_content(){
+    public void Getting_all_orders_content_matches_actual_content() {
         OrderBuilder orderBuilder = new OrderBuilder();
         Order order1 = orderBuilder.setId(1L).build();
         Order order2 = orderBuilder.setId(2L).build();

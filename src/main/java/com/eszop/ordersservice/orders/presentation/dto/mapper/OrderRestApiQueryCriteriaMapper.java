@@ -1,9 +1,9 @@
 package com.eszop.ordersservice.orders.presentation.dto.mapper;
 
+import com.eszop.ordersservice.orders.domain.usecase.exception.OrdersServiceException;
 import com.eszop.ordersservice.orders.presentation.dto.DescriptionFilterCriteriaDto;
 import com.eszop.ordersservice.orders.presentation.dto.IdFilterCriteriaDto;
 import com.eszop.ordersservice.orders.presentation.dto.OrderingCriteriaDto;
-import com.eszop.ordersservice.orders.domain.usecase.exception.OrdersServiceException;
 import com.eszop.ordersservice.querycriteria.*;
 import org.springframework.stereotype.Component;
 
@@ -76,15 +76,15 @@ public class OrderRestApiQueryCriteriaMapper {
 
         private static <T> Converter<Optional<T>> optionalConvert(Function<String, T> supplier) {
             return (String value) -> {
-                try{
+                try {
                     return Optional.of(supplier.apply(value));
-                } catch (Exception e){
+                } catch (Exception e) {
                     return Optional.empty();
                 }
             };
         }
 
-        private LocalDateTime convertToDateTime(String dateString){
+        private LocalDateTime convertToDateTime(String dateString) {
             try {
                 var formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
                 return LocalDateTime.parse(dateString, formatter);
@@ -99,7 +99,7 @@ public class OrderRestApiQueryCriteriaMapper {
         }
 
         public <T> T convert(String valueString, Class<T> aClass) {
-            return (T)converterByClassType.get(aClass).convert(valueString).orElseThrow(() -> new FormatNotSupportedException(valueString));
+            return (T) converterByClassType.get(aClass).convert(valueString).orElseThrow(() -> new FormatNotSupportedException(valueString));
         }
 
         @FunctionalInterface

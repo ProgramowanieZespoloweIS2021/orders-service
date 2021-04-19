@@ -4,11 +4,15 @@ import com.eszop.ordersservice.orders.domain.usecase.dto.OfferDto;
 import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
 import com.eszop.ordersservice.orders.domain.usecase.exception.OrdersServiceException;
 
+import java.util.Map;
+
 import static java.text.MessageFormat.format;
 
 public interface CreateOrderInputBoundary {
 
     void create(OrderDto orderDto, OfferDto offerDto);
+
+    void create(Map<OrderDto, OfferDto> offersByOrders);
 
     class SelectedOfferDoesNotExistException extends OrdersServiceException {
         public SelectedOfferDoesNotExistException(Long offerId) {

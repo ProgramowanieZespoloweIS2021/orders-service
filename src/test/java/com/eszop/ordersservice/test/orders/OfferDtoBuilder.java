@@ -26,7 +26,7 @@ public class OfferDtoBuilder {
         return this;
     }
 
-    public OfferDto build(){
+    public OfferDto build() {
         return new OfferDto(this.id, this.sellerId, this.tiers);
     }
 

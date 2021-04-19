@@ -32,7 +32,7 @@ public class OrderRestApiQueryCriteriaMapperTest {
 
 
     @Test
-    public void can_properly_map_id_filter_criteria() {
+    public void Can_properly_map_id_filter_criteria() {
         var idFilterCriteriaDto = new IdFilterCriteriaDto();
         idFilterCriteriaDto.buyerId = Optional.of(1L);
         idFilterCriteriaDto.state = Optional.of(OrderState.ORDERED);
@@ -46,7 +46,7 @@ public class OrderRestApiQueryCriteriaMapperTest {
     }
 
     @Test
-    public void can_properly_map_description_filter_criteria() {
+    public void Can_properly_map_description_filter_criteria() {
         var descriptionFilterCriteria = List.of("lt:2020-10-10", "gt:2019-10-10", "eq:2018-10-10", "ge:2020-09-10-10-10-10", "le:2020-10-01");
 
         var result = sut.queryCriteriaCollectionOf(
@@ -67,7 +67,7 @@ public class OrderRestApiQueryCriteriaMapperTest {
 
 
     @Test
-    void can_properly_map_ordering_criteria() {
+    void Can_properly_map_ordering_criteria() {
         var orderingCriteriaDto = new OrderingCriteriaDto(List.of(
                 "desc:creation_date", "asc:tier_id", "desc:offer_id"
         ));
@@ -82,7 +82,7 @@ public class OrderRestApiQueryCriteriaMapperTest {
     }
 
     @Test
-    void throws_on_wrong_data_format_for_description_based_filtering() {
+    void Throws_on_wrong_data_format_for_description_based_filtering() {
         var descriptionFilterCriteria = new DescriptionFilterCriteriaDto(List.of("lt:123sadasfasd"));
 
         assertThatThrownBy(
@@ -100,7 +100,7 @@ public class OrderRestApiQueryCriteriaMapperTest {
             "lte:2020-10-10",
             "egt:2020-10-10"
     })
-    void throws_on_wrong_filtering_type_for_description_based_filtering(String filteringCriteriaDescription) {
+    void Throws_on_wrong_filtering_type_for_description_based_filtering(String filteringCriteriaDescription) {
         var descriptionFilterCriteria = new DescriptionFilterCriteriaDto(List.of(filteringCriteriaDescription));
 
         assertThatThrownBy(
@@ -119,7 +119,7 @@ public class OrderRestApiQueryCriteriaMapperTest {
             "ascdd:creation_date",
             "descdd:creation_date"
     })
-    void throws_on_wrong_ordering_type(String orderingCriteria) {
+    void Throws_on_wrong_ordering_type(String orderingCriteria) {
         var orderingFilterCriteria = new OrderingCriteriaDto(List.of(orderingCriteria));
 
         assertThatThrownBy(
