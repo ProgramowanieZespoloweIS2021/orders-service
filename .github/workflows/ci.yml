@@ -38,11 +38,13 @@ jobs:
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 16
-      - name: Test with Maven(JaCoCo)
-        run: mvn --no-transfer-progress clean test failsafe:integration-test jacoco:report
+      - name: Test with Maven
+        run: mvn --no-transfer-progress clean test
+      - name: Integration Test with Maven
+        run: mvn --no-transfer-progress failsafe:integration-test -DPOSTGRES_HOST=postgres
+      - name: Generate raport with JaCoCo
+        run: mvn --no-transfer-progress jacoco:report
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-        env:
-          POSTGRES_HOST: postgres
