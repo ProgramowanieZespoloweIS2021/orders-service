@@ -58,4 +58,4 @@ jobs:
         with:
           java-version: 16
       - name: Integration Test with Maven
-        run: mvn --no-transfer-progress failsafe:integration-test failsafe:verify
+        run: mvn --no-transfer-progress clean install failsafe:integration-test failsafe:verify -DskipUnitTests=true
