@@ -32,6 +32,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 16
@@ -41,7 +44,7 @@ jobs:
       - name: Test with Maven
         run: mvn --no-transfer-progress clean test
       - name: Integration Test with Maven
-        run: mvn --no-transfer-progress failsafe:integration-test -DPOSTGRES_HOST=postgres
+        run: mvn --no-transfer-progress failsafe:integration-test failsafe:verify
       - name: Generate raport with JaCoCo
         run: mvn --no-transfer-progress jacoco:report
       - name: Codecov
