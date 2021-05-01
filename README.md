@@ -4,7 +4,6 @@
 
 [![codecov](https://codecov.io/gh/ProgramowanieZespoloweIS2021/orders-service/branch/main/graph/badge.svg?token=O0MYevLF8p)](https://codecov.io/gh/ProgramowanieZespoloweIS2021/orders-service)
 
-
 # Endpoints
 
 ### Get Order
@@ -35,7 +34,8 @@ Returns:
 
 `GET http://<hostname>/orders?<fitlering>&<sorting>&<pagination>`
 
-Filtering options: 
+Filtering options:
+
 - DEFAULT: `none`
 - `tier_id=<id>`
 - `buyer_id=<id>`
@@ -44,10 +44,12 @@ Filtering options:
 - `creation_date=<le|lt|ge|gt|eq>:<yyyy-MM-dd|yyyy-MM-dd-HH-mm-ss>`
 
 Ordering options:
+
 - DEFAULT: `order_by=desc:creation_date`
 - `order_by=<asc|desc>:<field_name>`
 
 Pagination options:
+
 - DEFAULT: `limit=10&offset=0`
 - `limit=<value>`
 - `offset=<value>`
@@ -72,12 +74,12 @@ Returns:
 }
 ```
 
-
 ### Create Order
 
 `POST http://<hostname>/orders`
 
 Request Body:
+
 ```json
 {
   "buyerId": <id>,
@@ -88,6 +90,7 @@ Request Body:
 ```
 
 Returns:
+
 ```json
 {
   "message": "Created"

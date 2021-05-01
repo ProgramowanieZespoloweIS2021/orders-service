@@ -10,6 +10,14 @@ import java.time.LocalDateTime;
 @Table(name = "orders")
 public class OrderOrm {
 
+    private Long id;
+    private Long buyerId;
+    private Long offerId;
+    private Long tierId;
+    private String description;
+    private OrderState state;
+    private LocalDateTime creationDate;
+
     public static OrderOrm from(Order order) {
         var toReturn = new OrderOrm();
         toReturn.id = order.getId();
@@ -26,16 +34,9 @@ public class OrderOrm {
         return new Order(id, buyerId, offerId, tierId, description, state, creationDate);
     }
 
-    private Long id;
-    private Long buyerId;
-    private Long offerId;
-    private Long tierId;
-    private String description;
-    private OrderState state;
-    private LocalDateTime creationDate;
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "orders_id_sequence", sequenceName = "orders_id_sequence", allocationSize = 40)
+    @GeneratedValue(generator = "orders_id_sequence")
     public Long getId() {
         return id;
     }
