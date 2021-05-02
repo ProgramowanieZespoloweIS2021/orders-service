@@ -10,13 +10,14 @@
     </parent>
     <groupId>com.eszop</groupId>
     <artifactId>orders-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${version}</version>
     <packaging>jar</packaging>
     <name>orders-service</name>
     <description>Orders service</description>
     <properties>
         <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version>0.0.1</version>
     </properties>
     <dependencies>
         <dependency>
