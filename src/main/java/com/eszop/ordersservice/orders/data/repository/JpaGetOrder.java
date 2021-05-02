@@ -6,6 +6,7 @@ import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -33,6 +34,6 @@ public class JpaGetOrder implements GetOrderDataSourceGateway {
 
     @Override
     public Set<OrderOrm> all() {
-        return null;
+        return new HashSet<>(jpaOrderRepository.findAll());
     }
 }

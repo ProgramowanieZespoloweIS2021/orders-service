@@ -42,6 +42,11 @@ public class OrderRestApiQueryCriteriaMapper {
         return new QueryCriteriaCollection(filterCriteria, orderCriteria, paginationCriteria);
     }
 
+    private <K, T> Optional<T> getOptional(Map<K, T> getFrom, K key) {
+        if (!getFrom.containsKey(key)) return Optional.empty();
+        return Optional.of(getFrom.get(key));
+    }
+
     public static class FilterMappingNotFoundException extends OrdersServiceException {
         public FilterMappingNotFoundException(String filteringCriteriaDescription) {
             super(MessageFormat.format("Filter mapping not found for description: {0}", filteringCriteriaDescription));
@@ -107,11 +112,6 @@ public class OrderRestApiQueryCriteriaMapper {
             T convert(String value);
         }
 
-    }
-
-    private <K, T> Optional<T> getOptional(Map<K, T> getFrom, K key) {
-        if (!getFrom.containsKey(key)) return Optional.empty();
-        return Optional.of(getFrom.get(key));
     }
 
     private class FilterCriteriaDescriptionMapper {
