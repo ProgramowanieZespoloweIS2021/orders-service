@@ -18,14 +18,17 @@ public class QueryCriteriaCollection {
         this.paginationCriteria = paginationCriteria;
     }
 
+    public List<FilterCriteria<?>> getFilterQueryCriteria() {
+        return filterCriteria;
+    }
+
     public QueryCriteriaCollection setFilterQueryCriteria(List<FilterCriteria<?>> filterCriteria) {
         this.filterCriteria = filterCriteria;
         return this;
     }
 
-    public QueryCriteriaCollection setOrderingQueryCriteria(List<OrderCriteria> orderCriteria) {
-        this.orderingCriteria = orderCriteria;
-        return this;
+    public PaginationCriteria getPaginationQueryCriteria() {
+        return paginationCriteria;
     }
 
     public QueryCriteriaCollection setPaginationQueryCriteria(PaginationCriteria paginationCriteria) {
@@ -33,15 +36,12 @@ public class QueryCriteriaCollection {
         return this;
     }
 
-    public List<FilterCriteria<?>> getFilterQueryCriteria() {
-        return filterCriteria;
-    }
-
-    public PaginationCriteria getPaginationQueryCriteria() {
-        return paginationCriteria;
-    }
-
     public List<OrderCriteria> getOrderingQueryCriteria() {
         return orderingCriteria;
+    }
+
+    public QueryCriteriaCollection setOrderingQueryCriteria(List<OrderCriteria> orderCriteria) {
+        this.orderingCriteria = orderCriteria;
+        return this;
     }
 }

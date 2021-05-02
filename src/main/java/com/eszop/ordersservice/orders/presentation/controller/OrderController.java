@@ -20,9 +20,7 @@ import com.eszop.ordersservice.orders.presentation.views.response.UpdateOrderSta
 import com.eszop.ordersservice.querycriteria.PaginationCriteria;
 import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,8 +52,8 @@ public class OrderController {
     @GetMapping("/{id}")
     public GetOrderResponse getOrder(@PathVariable("id") Long orderId) {
         Order order = getOrder.byId(orderId);
-        Mono<?> offerMono = offersApiClient.getOffer(order.getOfferId(), Object.class).onErrorReturn(new OfferDto(null, null, Collections.emptyList()));
-        return new GetOrderResponse(offerMono.block(), order.getBuyerId(), order.getTierId(), OrderMapper.toOrderDto(order));
+        OfferDto offer = offersApiClient.getOffer(order.getOfferId());
+        return new GetOrderResponse(offer, order.getBuyerId(), order.getTierId(), OrderMapper.toOrderDto(order));
     }
 
     @PostMapping
@@ -79,14 +77,14 @@ public class OrderController {
         var orderCriteria = new OrderingCriteriaDto(ordering);
         var paginationCriteria = new PaginationCriteria(pageLimit, pageOffset);
 
-        QueryCriteriaCollection collection = queryCriteriaMapper.queryCriteriaCollectionOf(
+        QueryCriteriaCollection queryCriteria = queryCriteriaMapper.queryCriteriaCollectionOf(
                 idFilterCriteria,
                 descriptionFilterCriteria,
                 orderCriteria,
                 paginationCriteria
         );
 
-        return getOrder.byQueryCriteria(collection);
+        return getOrder.byQueryCriteria(queryCriteria);
     }
 
 }
