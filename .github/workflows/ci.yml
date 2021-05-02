@@ -19,23 +19,7 @@ jobs:
       - name: Build with Maven
         run: mvn --no-transfer-progress -Dmaven.test.skip=true --file pom.xml package
 
-  unit-test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 16
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 16
-      - name: Test with Maven(JaCoCo)
-        run: mvn --no-transfer-progress clean test jacoco:report
-      - name: Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-  integration-test:
+  test:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -50,12 +34,15 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 16
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 16
-      - name: Integration Test with Maven
-        run: mvn --no-transfer-progress clean install failsafe:integration-test failsafe:verify -DskipUnitTests=true
+      - name: Test with Maven(JaCoCo)
+        run: mvn --no-transfer-progress clean vetify
+      - name: Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
