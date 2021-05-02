@@ -4,6 +4,15 @@
 
 [![codecov](https://codecov.io/gh/ProgramowanieZespoloweIS2021/orders-service/branch/main/graph/badge.svg?token=O0MYevLF8p)](https://codecov.io/gh/ProgramowanieZespoloweIS2021/orders-service)
 
+## Possible env variables
+- `POSTGRES_USER` (postgres)
+- `POSTGRES_PASSWORD` (postgres)
+- `POSTGRES_HOST` (eszopdb)
+- `POSTGRES_PORT` (5432)
+- `DATABASE` (postgres) - database name
+- `SERVICE_PORT` (80)
+- `OFFERS_HOST` (offers)
+- `OFFERS_PORT` (80)
 
 # Endpoints
 
@@ -35,7 +44,8 @@ Returns:
 
 `GET http://<hostname>/orders?<fitlering>&<sorting>&<pagination>`
 
-Filtering options: 
+Filtering options:
+
 - DEFAULT: `none`
 - `tier_id=<id>`
 - `buyer_id=<id>`
@@ -44,10 +54,12 @@ Filtering options:
 - `creation_date=<le|lt|ge|gt|eq>:<yyyy-MM-dd|yyyy-MM-dd-HH-mm-ss>`
 
 Ordering options:
+
 - DEFAULT: `order_by=desc:creation_date`
 - `order_by=<asc|desc>:<field_name>`
 
 Pagination options:
+
 - DEFAULT: `limit=10&offset=0`
 - `limit=<value>`
 - `offset=<value>`
@@ -55,7 +67,8 @@ Pagination options:
 Returns:
 
 ```json
-{
+[
+  {
     "offer": {
 //        <values returned by offers/{id}
     },
@@ -69,25 +82,29 @@ Returns:
     "creationDate": "2021-04-14-12-50-21",
     "description": "description",
     "state": "ORDERED"
-}
+  }...
+]
 ```
-
 
 ### Create Order
 
 `POST http://<hostname>/orders`
 
 Request Body:
+
 ```json
-{
+[
+  {
   "buyerId": <id>,
   "offerId":  <id>,
   "tierId": <id>,
   "description":  "desc"
-}
+  }...
+]
 ```
 
 Returns:
+
 ```json
 {
   "message": "Created"
