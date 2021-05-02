@@ -41,7 +41,7 @@ jobs:
         with:
           java-version: 16
       - name: Test with Maven(JaCoCo)
-        run: mvn --no-transfer-progress clean vetify
+        run: mvn --no-transfer-progress clean verify
       - name: Codecov
         uses: codecov/codecov-action@v1
         with:
