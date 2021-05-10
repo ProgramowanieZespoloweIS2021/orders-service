@@ -52,5 +52,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          build-args: |
+            REVISION=${{needs.get_version.outputs.version}}
           push: true
           tags: loniowsky/orders-service:latest,loniowsky/orders-service:${{needs.get_version.outputs.version}}
