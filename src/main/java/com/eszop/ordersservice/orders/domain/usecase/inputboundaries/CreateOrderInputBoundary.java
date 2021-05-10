@@ -1,5 +1,6 @@
 package com.eszop.ordersservice.orders.domain.usecase.inputboundaries;
 
+import com.eszop.ordersservice.orders.domain.entity.Order;
 import com.eszop.ordersservice.orders.domain.usecase.dto.OfferDto;
 import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
 import com.eszop.ordersservice.orders.domain.usecase.exception.OrdersServiceException;
@@ -23,6 +24,12 @@ public interface CreateOrderInputBoundary {
     class TierDoesNotExistForSelectedOfferException extends OrdersServiceException {
         public TierDoesNotExistForSelectedOfferException(Long offerId, Long tierId) {
             super(format("Tier with id({0}) does not exist for offer with id({1})", tierId, offerId));
+        }
+    }
+
+    class SellerIdAndBuyerIdAreNotValidException extends OrdersServiceException{
+        public SellerIdAndBuyerIdAreNotValidException(Order order) {
+            super(format("Seller id({0}) and buyer id({1}) are invalid", order.getSellerId(), order.getBuyerId()));
         }
     }
 }

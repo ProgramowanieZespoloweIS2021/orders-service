@@ -1,10 +1,10 @@
 package com.eszop.ordersservice.orders.domain.usecase.inputboundaries;
 
 import com.eszop.ordersservice.orders.domain.entity.Order;
+import com.eszop.ordersservice.orders.domain.usecase.datagateways.KnownTotalCollection;
 import com.eszop.ordersservice.orders.domain.usecase.exception.OrdersServiceException;
 import com.eszop.ordersservice.querycriteria.QueryCriteriaCollection;
 
-import java.util.List;
 import java.util.Set;
 
 import static java.text.MessageFormat.format;
@@ -13,7 +13,7 @@ public interface GetOrderInputBoundary {
 
     Order byId(Long id);
 
-    List<Order> byQueryCriteria(QueryCriteriaCollection queryCriteriaCollection);
+    KnownTotalCollection<Order> byQueryCriteria(QueryCriteriaCollection queryCriteriaCollection);
 
     Set<Order> all();
 

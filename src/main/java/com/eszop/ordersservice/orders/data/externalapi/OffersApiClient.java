@@ -2,60 +2,75 @@ package com.eszop.ordersservice.orders.data.externalapi;
 
 
 import com.eszop.ordersservice.config.OffersConfig;
+import com.eszop.ordersservice.orders.domain.entity.Order;
 import com.eszop.ordersservice.orders.domain.usecase.dto.OfferDto;
 import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
-import com.eszop.ordersservice.orders.domain.usecase.exception.OrdersServiceException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.text.MessageFormat;
-import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
 public class OffersApiClient {
 
-    private final WebClient webClient;
+    private final OffersConfig offersConfig;
 
     public OffersApiClient(OffersConfig offersConfig) {
-        this.webClient = WebClient.builder().baseUrl(offersConfig.getUrl().toString()).build();
+        this.offersConfig = offersConfig;
     }
 
-    public Mono<OfferDto> getOfferMono(Long offerId) {
-        return webClient.get().uri("/offers/" + offerId)
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new OrdersServiceException(MessageFormat.format("Offer with id {0} does not exist", offerId))))
-                .onStatus(HttpStatus::is5xxServerError, clientResponse -> Mono.error(new OrdersServiceException("Offers service encountered an error")))
-                .bodyToMono(
-                        OfferDto.class
-                ).doOnError((error) -> {
-                    if (error instanceof OrdersServiceException ordersError)
-                        throw ordersError;
-                    else
-                        throw new OrdersServiceException("Could not get offer details");
-                })
-                .timeout(
-                        Duration.ofSeconds(3)
-                );
+    public Mono<OfferDto> getOfferDtoMono(Long offerId) {
+        return getTypedMono(offerId, OfferDto.class);
     }
 
-    public OfferDto getOffer(Long offerId) {
+    public Mono<Object> getOfferMono(Long offerId) {
+        return getTypedMono(offerId, Object.class);
+    }
+
+    public OfferDto getOfferDto(Long offerId) {
+        return getOfferDtoMono(offerId).block();
+    }
+
+    public Object getOffer(Long offerId) {
         return getOfferMono(offerId).block();
     }
 
-    public Map<OrderDto, OfferDto> getOfferByOrder(List<OrderDto> orders) {
-        return orders.stream().map(
-                order -> new AbstractMap.SimpleEntry<>(order, getOfferMono(order.offerId))
+    public Map<Order, OfferDto> getOfferDtoByOrder(List<Order> orders) {
+        return getResourceByList(orders, Order::getOfferId, OffersApiClient::getOfferDtoMono);
+    }
+
+    public Map<OrderDto, OfferDto> getOfferDtoByOrderDto(List<OrderDto> orders) {
+        return getResourceByList(orders, (orderDto -> orderDto.offerId), OffersApiClient::getOfferDtoMono);
+    }
+
+    public Map<Order, Object> getOfferByOrder(List<Order> orders) {
+        return getResourceByList(orders, Order::getOfferId, OffersApiClient::getOfferMono);
+    }
+
+    private<T, R> Map<T, R> getResourceByList(List<T> by, Function<T, Long> identityResolver, BiFunction<OffersApiClient, Long, Mono<R>> resourceProvider){
+        return by.stream().map(
+                item -> new AbstractMap.SimpleEntry<>(item, resourceProvider.apply(this, identityResolver.apply(item)))
         ).map(
                 offerByOrder -> new AbstractMap.SimpleEntry<>(offerByOrder.getKey(), offerByOrder.getValue().block())
         ).collect(
                 Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)
         );
+    }
+
+    private<T> Mono<T> getTypedMono(Long offerId, Class<T> aClass){
+        return new WebClientRequestBuilder()
+                .setBaseUrl(offersConfig.getUrl().toString())
+                .setResourcePath("/offers/" + offerId)
+                .setMessageOn4xx(MessageFormat.format("Offer with id {0} does not exist", offerId))
+                .setMessageOn5xx("Offers service encountered an error")
+                .setMessageOnError("Could not get offer details")
+                .buildForClass(aClass);
     }
 
 }

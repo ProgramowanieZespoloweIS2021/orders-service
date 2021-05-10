@@ -25,17 +25,22 @@ Returns:
 ```json
 {
     "offer": {
-//        <values returned by offers/{id}
+    //        <values returned by offers/{id}
     },
     "buyer": {
-//      <values returned by user/{id}
+      "firstName": "test2",
+      "surname": "test2",
+      "email": "test2"
     },
-    "selectedTier": {
-//      <values returned by tier/{id}
+    "seller": {
+      "firstName": "test1",
+      "surname": "test1",
+      "email": "test1"
     },
-    "id": 29,
-    "creationDate": "2021-04-14-12-50-21",
-    "description": "description",
+    "selectedTierId": 2,
+    "id": 2,
+    "creationDate": "2021-05-10-10-18-53",
+    "description": "description2",
     "state": "ORDERED"
 }
 ```
@@ -73,14 +78,19 @@ Returns:
 //        <values returned by offers/{id}
     },
     "buyer": {
-//      <values returned by user/{id}
+      "firstName": "test2",
+      "surname": "test2",
+      "email": "test2"
     },
-    "selectedTier": {
-//      <values returned by tier/{id}
+    "seller": {
+      "firstName": "test1",
+      "surname": "test1",
+      "email": "test1"
     },
-    "id": 29,
-    "creationDate": "2021-04-14-12-50-21",
-    "description": "description",
+    "selectedTierId": 2,
+    "id": 2,
+    "creationDate": "2021-05-10-10-18-53",
+    "description": "description2",
     "state": "ORDERED"
   }...
 ]

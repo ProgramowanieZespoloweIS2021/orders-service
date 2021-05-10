@@ -1,7 +1,6 @@
 package com.eszop.ordersservice.test.orders;
 
 import com.eszop.ordersservice.orders.domain.entity.Order;
-import com.eszop.ordersservice.orders.domain.entity.OrderState;
 import com.eszop.ordersservice.orders.domain.usecase.CreateOrder;
 import com.eszop.ordersservice.orders.domain.usecase.datagateways.CreateOrderDataSourceGateway;
 import com.eszop.ordersservice.orders.domain.usecase.dto.OfferDto;
@@ -35,12 +34,12 @@ public class CreateOrderTest {
 
     @ParameterizedTest
     @CsvSource({
-            "1, 1, 1, ORDERED",
-            "1, 2, 1, FINISHED"
+            "1, 1, 1, 2",
+            "2, 1, 2, 1"
     })
-    public void Valid_order_is_created(Long id, Long offerId, Long selectedTierId, OrderState orderState) throws CreateOrderInputBoundary.SelectedOfferDoesNotExistException, CreateOrderInputBoundary.TierDoesNotExistForSelectedOfferException {
-        OrderDto order = new OrderDtoBuilder().setId(id).setOfferId(offerId).setTierId(selectedTierId).setState(orderState).build();
-        OfferDto offer = new OfferDtoBuilder().setId(offerId).build();
+    public void Valid_order_is_created(Long offerId, Long selectedTierId, Long buyerId, Long sellerId) {
+        OrderDto order = new OrderDtoBuilder().setOfferId(offerId).setTierId(selectedTierId).setBuyerId(buyerId).build();
+        OfferDto offer = new OfferDtoBuilder().setId(offerId).setSellerId(sellerId).build();
 
         sut.create(order, offer);
 
@@ -57,12 +56,12 @@ public class CreateOrderTest {
     }
 
     @Test
-    public void Create_order_with_invalid_offerId_fails() {
-        OrderDto order = new OrderDtoBuilder().setOfferId(2L).build();
-        OfferDto offer = new OfferDtoBuilder().setId(null).build();
+    public void Create_order_with_invalid_buyer_id_and_seller_id_fails() {
+        OrderDto orderDto = new OrderDtoBuilder().setBuyerId(1L).build();
+        OfferDto offerDto = new OfferDtoBuilder().setSellerId(1L).build();
 
-        assertThatThrownBy(() -> sut.create(order, offer))
-                .isInstanceOf(CreateOrderInputBoundary.SelectedOfferDoesNotExistException.class);
+        assertThatThrownBy(() -> sut.create(orderDto, offerDto))
+                .isInstanceOf(CreateOrderInputBoundary.SellerIdAndBuyerIdAreNotValidException.class);
     }
 
 }

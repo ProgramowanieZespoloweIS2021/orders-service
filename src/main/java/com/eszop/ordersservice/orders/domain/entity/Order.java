@@ -1,12 +1,15 @@
 package com.eszop.ordersservice.orders.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class Order {
 
     private Long id;
     private Long buyerId;
+    private Long sellerId;
     private Long offerId;
     private Long tierId;
     private String description;
@@ -16,14 +19,30 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, Long buyerId, Long offerId, Long tierId, String description, OrderState state, LocalDateTime creationDate) {
+    public Order(Long id, Long buyerId, Long sellerId, Long offerId, Long tierId, String description, OrderState state, LocalDateTime creationDate) {
         this.id = id;
         this.buyerId = buyerId;
         this.offerId = offerId;
+        this.sellerId = sellerId;
         this.tierId = tierId;
         this.description = description;
         this.state = state;
         this.creationDate = creationDate;
+    }
+
+    public Order(Long buyerId, Long offerId, Long tierId, String description) {
+        this.buyerId = buyerId;
+        this.offerId = offerId;
+        this.tierId = tierId;
+        this.description = description;
+    }
+
+    public boolean areSellerAndBuyerIdsValid(){
+        List<Predicate<Order>> validationPredicates = List.of(
+                (order -> !Objects.equals(sellerId, buyerId)) // sellerId and buyerId have to be different
+        );
+
+        return validationPredicates.stream().allMatch(predicate -> predicate.test(this));
     }
 
     public Long getId() {
@@ -93,5 +112,14 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public Order setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
+        return this;
     }
 }
