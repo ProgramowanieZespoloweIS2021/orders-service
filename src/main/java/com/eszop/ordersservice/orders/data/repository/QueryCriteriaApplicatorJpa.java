@@ -1,5 +1,6 @@
 package com.eszop.ordersservice.orders.data.repository;
 
+import com.eszop.ordersservice.orders.domain.usecase.datagateways.KnownTotalCollection;
 import com.eszop.ordersservice.querycriteria.*;
 
 import javax.persistence.EntityManager;
@@ -23,7 +24,7 @@ public class QueryCriteriaApplicatorJpa<T> {
         this.typeArgument = typeArgument;
     }
 
-    public List<T> apply(QueryCriteriaCollection queryCriteriaCollection) {
+    public KnownTotalCollection<T> apply(QueryCriteriaCollection queryCriteriaCollection) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(typeArgument);
         Root<T> root = criteriaQuery.from(typeArgument);
@@ -49,7 +50,13 @@ public class QueryCriteriaApplicatorJpa<T> {
         typedQuery.setFirstResult(paginationCriteria.getOffset());
         typedQuery.setMaxResults(paginationCriteria.getLimit());
 
-        return typedQuery.getResultList();
+        CriteriaQuery<Long> criteriaQueryTotal = criteriaBuilder.createQuery(Long.class);
+        criteriaQueryTotal.select(criteriaBuilder.count(criteriaQueryTotal.from(typeArgument)));
+        entityManager.createQuery(criteriaQueryTotal);
+        criteriaQueryTotal.where(predicates.toArray(new Predicate[predicates.size()]));
+        Long total = entityManager.createQuery(criteriaQueryTotal).getSingleResult();
+
+        return new KnownTotalCollection<>(typedQuery.getResultList(), total);
     }
 
 

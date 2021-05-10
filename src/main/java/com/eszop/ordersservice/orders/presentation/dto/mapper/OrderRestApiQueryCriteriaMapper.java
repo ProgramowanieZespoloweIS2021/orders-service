@@ -31,6 +31,7 @@ public class OrderRestApiQueryCriteriaMapper {
     public QueryCriteriaCollection queryCriteriaCollectionOf(IdFilterCriteriaDto idFilterCriteria, DescriptionFilterCriteriaDto descriptionFilterCriteria, OrderingCriteriaDto orderingCriteria, PaginationCriteria paginationCriteria) {
         List<FilterCriteria<?>> filterCriteria = new ArrayList<>();
         idFilterCriteria.buyerId.map(item -> filterCriteria.add(filterMapper.mapIdValue("buyerId", item)));
+        idFilterCriteria.sellerId.map(item -> filterCriteria.add(filterMapper.mapIdValue("offerId", item)));
         idFilterCriteria.offerId.map(item -> filterCriteria.add(filterMapper.mapIdValue("offerId", item)));
         idFilterCriteria.state.map(item -> filterCriteria.add(filterMapper.mapIdValue("state", item)));
         idFilterCriteria.tierId.map(item -> filterCriteria.add(filterMapper.mapIdValue("tierId", item)));

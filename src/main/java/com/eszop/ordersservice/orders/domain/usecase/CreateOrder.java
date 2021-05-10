@@ -8,7 +8,7 @@ import com.eszop.ordersservice.orders.domain.usecase.datagateways.CreateOrderDat
 import com.eszop.ordersservice.orders.domain.usecase.dto.OfferDto;
 import com.eszop.ordersservice.orders.domain.usecase.dto.OrderDto;
 import com.eszop.ordersservice.orders.domain.usecase.dto.mapper.OfferMapper;
-import com.eszop.ordersservice.orders.domain.usecase.dto.mapper.OrderMapper;
+import com.eszop.ordersservice.orders.domain.usecase.dto.mapper.OrderDtoMapper;
 import com.eszop.ordersservice.orders.domain.usecase.inputboundaries.CreateOrderInputBoundary;
 import org.springframework.stereotype.Service;
 
@@ -27,18 +27,19 @@ public class CreateOrder implements CreateOrderInputBoundary {
 
     @Override
     public void create(OrderDto orderDto, OfferDto offerDto) {
-        if (offerDto.id == null) {
-            throw new SelectedOfferDoesNotExistException(orderDto.offerId);
+        Offer offer = OfferMapper.toOffer(offerDto);
+
+        if (!offer.isContainingTier(new Tier(orderDto.tierId))) {
+            throw new TierDoesNotExistForSelectedOfferException(orderDto.offerId, orderDto.tierId);
         }
 
-        Order order = OrderMapper.toOrder(orderDto);
+        Order order = OrderDtoMapper.toOrder(orderDto);
+        order.setSellerId(offerDto.ownerId);
         order.setCreationDate(LocalDateTime.now());
         order.setState(OrderState.ORDERED);
 
-        Offer offer = OfferMapper.toOffer(offerDto);
-
-        if (!offer.isContainingTier(new Tier(order.getTierId()))) {
-            throw new TierDoesNotExistForSelectedOfferException(order.getOfferId(), order.getTierId());
+        if (!order.areSellerAndBuyerIdsValid()){
+            throw new SellerIdAndBuyerIdAreNotValidException(order);
         }
 
         createOrderDataSourcegateway.create(order);

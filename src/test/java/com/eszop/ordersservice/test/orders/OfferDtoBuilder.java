@@ -30,8 +30,4 @@ public class OfferDtoBuilder {
         return new OfferDto(this.id, this.sellerId, this.tiers);
     }
 
-    public OfferDtoBuilder setSellerId(long sellerId) {
-        this.sellerId = sellerId;
-        return this;
-    }
 }

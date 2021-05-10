@@ -22,6 +22,5 @@ public class OfferDto {
         this.id = id;
         this.ownerId = ownerId;
         this.tiers = tiers;
-
     }
 }

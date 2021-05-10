@@ -4,6 +4,8 @@ import com.eszop.ordersservice.orders.domain.entity.Order;
 import com.eszop.ordersservice.orders.domain.entity.OrderState;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,6 +14,7 @@ public class OrderOrm {
 
     private Long id;
     private Long buyerId;
+    private Long sellerId;
     private Long offerId;
     private Long tierId;
     private String description;
@@ -22,6 +25,7 @@ public class OrderOrm {
         var toReturn = new OrderOrm();
         toReturn.id = order.getId();
         toReturn.buyerId = order.getBuyerId();
+        toReturn.sellerId = order.getSellerId();
         toReturn.offerId = order.getOfferId();
         toReturn.description = order.getDescription();
         toReturn.state = order.getState();
@@ -31,7 +35,7 @@ public class OrderOrm {
     }
 
     public Order asOrder() {
-        return new Order(id, buyerId, offerId, tierId, description, state, creationDate);
+        return new Order(id, buyerId, sellerId, offerId, tierId, description, state, creationDate);
     }
 
     @Id
@@ -46,6 +50,7 @@ public class OrderOrm {
     }
 
     @Column(name = "buyer_id")
+    @NotNull
     public Long getBuyerId() {
         return buyerId;
     }
@@ -55,6 +60,7 @@ public class OrderOrm {
     }
 
     @Column(name = "offer_id")
+    @NotNull
     public Long getOfferId() {
         return offerId;
     }
@@ -64,6 +70,7 @@ public class OrderOrm {
     }
 
     @Column(name = "tier_id")
+    @NotNull
     public Long getTierId() {
         return tierId;
     }
@@ -73,6 +80,7 @@ public class OrderOrm {
     }
 
     @Column(name = "description")
+    @NotEmpty
     public String getDescription() {
         return description;
     }
@@ -83,6 +91,7 @@ public class OrderOrm {
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
+    @NotNull
     public OrderState getState() {
         return state;
     }
@@ -92,11 +101,23 @@ public class OrderOrm {
     }
 
     @Column(name = "creation_date")
+    @NotNull
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    @Column(name = "seller_id")
+    @NotNull
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public OrderOrm setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
+        return this;
     }
 }

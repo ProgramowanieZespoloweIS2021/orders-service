@@ -9,6 +9,7 @@ public class OrderBuilder {
 
     private Long id = 1L;
     private Long buyerId = 1L;
+    private Long sellerId = 1L;
     private Long offerId = 1L;
     private Long tierId = 1L;
     private String description = "description";
@@ -44,10 +45,16 @@ public class OrderBuilder {
         return this;
     }
 
+    public OrderBuilder setSellerId(Long sellerId){
+        this.sellerId = sellerId;
+        return this;
+    }
+
     public Order build() {
         var built = new Order();
         built.setId(id);
         built.setBuyerId(buyerId);
+        built.setSellerId(sellerId);
         built.setOfferId(offerId);
         built.setTierId(tierId);
         built.setDescription(description);
