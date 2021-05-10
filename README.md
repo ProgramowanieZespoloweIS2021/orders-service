@@ -13,6 +13,8 @@
 - `SERVICE_PORT` (80)
 - `OFFERS_HOST` (offers)
 - `OFFERS_PORT` (80)
+- `USERS_HOST` (users)
+- `USERS_PORT` (80)
 
 # Endpoints
 
@@ -54,6 +56,7 @@ Filtering options:
 - DEFAULT: `none`
 - `tier_id=<id>`
 - `buyer_id=<id>`
+- `seller_id=<id>`
 - `offer_id=<id>`
 - `state=<ORDERED|IN_PROGRESS|FINISHED>`
 - `creation_date=<le|lt|ge|gt|eq>:<yyyy-MM-dd|yyyy-MM-dd-HH-mm-ss>`
