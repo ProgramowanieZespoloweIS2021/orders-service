@@ -3,7 +3,7 @@
 ![CI/CD](https://github.com/ProgramowanieZespoloweIS2021/orders-service/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/ProgramowanieZespoloweIS2021/orders-service/branch/main/graph/badge.svg?token=O0MYevLF8p)](https://codecov.io/gh/ProgramowanieZespoloweIS2021/orders-service)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/ProgramowanieZespoloweIS2021/orders-service)
-https://img.shields.io/docker/v/loniowsky/orders-service?label=dockerhub%20image
+![Docker Image Version (latest by date)](https://img.shields.io/docker/v/loniowsky/orders-service?label=dockerhub%20image)
 
 ## Possible env variables
 - `POSTGRES_USER` (postgres)
