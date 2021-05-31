@@ -124,3 +124,25 @@ Returns:
   "message": "Created"
 }
 ```
+
+### Update order state
+
+`POST http://<hostname>/orders/{id}/state`
+
+Possible values: `ORDERED/IN_PROGRESS/FINISHED`
+
+Request Body:
+
+```json
+{
+    "value": "FINISHED"
+}
+```
+
+Returns:
+
+```json
+{
+  "message": "Updated"
+}
+```
