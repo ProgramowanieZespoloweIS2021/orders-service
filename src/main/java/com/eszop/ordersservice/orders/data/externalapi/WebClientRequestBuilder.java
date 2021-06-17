@@ -61,7 +61,7 @@ public class WebClientRequestBuilder {
                 }).switchIfEmpty(
                         Mono.error(new OrdersServiceException(messageOn4xx))
                 ).timeout(
-                        Duration.ofSeconds(3)
+                        Duration.ofSeconds(10)
                 );
     }
 }
